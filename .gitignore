@@ -1,1 +1,34 @@
+# Restricted dataset and local derivatives
+/data/**
+!/data/README.md
+/reports/private/
+/reports/failure_cases/**
+!/reports/failure_cases/.gitkeep
+/assets/demo/**
+!/assets/demo/.gitkeep
+*.zip
+*.zip.part
+*.part
+
+# Model artifacts
+*.pt
+*.pth
+*.onnx
+*.safetensors
+/runs/
+/weights/
+/checkpoints/
+
+# Credentials and Python/Colab artifacts
+.env
+.env.*
+*.token
+rclone.conf
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.venv/
+venv/
+.DS_Store
 note
