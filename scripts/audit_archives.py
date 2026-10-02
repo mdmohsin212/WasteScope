@@ -88,7 +88,7 @@ def main() -> int:
             print(f"ERROR: {archive}: {exc}", file=sys.stderr)
             return 1
         
-        reports.append(reports)
+        reports.append(report)
         print(
             f"{archive.name}: {report['file_count']} files, "
             f"{report['archive_gib']} GiB ZIP, "
