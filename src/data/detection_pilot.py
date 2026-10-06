@@ -35,3 +35,13 @@ def read_splits(path):
         if assignment.get(video) != split:
             raise ValueError(f"Fixed assignment changed: {video}")
     return assignment
+
+def index_files(archive, assignment):
+    images, labels = {}, {}
+    
+    for member in archive.infolist():
+        path = PurePosixPath(member.filename)
+        if member.is_dir() or path.suffix.lower() not in {".png", ".txt"}:
+            continue
+        
+        
