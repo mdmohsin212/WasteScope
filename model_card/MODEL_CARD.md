@@ -1,1 +1,0 @@
-# WasteScope Model Card
