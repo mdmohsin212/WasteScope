@@ -8,8 +8,6 @@ SPLITS = ("train", "val", "test")
 
 def video_id(filename: str | Path) -> str:
     prefix = PurePosixPath(str(filename).replace("\\", "/")).stem.split("_", 1)[0]
-    if len(prefix) != 4 or any(char not in "0123456789" for char in prefix):
-        raise ValueError(f"Expected a four-digit video prefix: {filename!s}")
     return prefix
 
 
