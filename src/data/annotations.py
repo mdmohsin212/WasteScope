@@ -1,7 +1,9 @@
 import json
+import numpy as np
 from __future__ import annotations
 from collections import defaultdict
 from collections.abc import Iterable, Mapping, Sequence
+from pycocotools import mask as mask_utils
 from copy import deepcopy
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
@@ -95,3 +97,72 @@ def parse_yolo_labels(
         except ValueError as error:
             raise ValueError(f"{source}:{line_number}: {error}") from error
     return result
+
+
+def read_yolo_labels(
+    path: str | Path, *,
+    class_map : ClassMap,
+    format: Literal["detection", "tracking"] = "detection"
+) -> list[BoxAnnotation]:
+    path = Path(path)
+    return parse_yolo_labels(path.read_bytes(), source=str(path), class_map=class_map, format=format)
+
+
+def decode_coco_mask(
+    annotation: Mapping[str, Any],
+    width: int, height: int
+) -> Any:
+    segmantation = annotation["segmentation"]
+    if isinstance(segmantation, list):
+        rle = mask_utils.merge(mask_utils.frPyObjects(segmantation, height, width))
+    else:
+        counts = segmantation["counts"]
+        if isinstance(counts, list):
+            rle = mask_utils.frPyObjects(
+                {"size": [height, width], "counts": [int(value) for value in counts]}, height, width
+            )
+        else:
+            rle = {"size": [height, width], "counts": counts.encode("ascii") if isinstance(counts, str) else counts}
+    return mask_utils.decode(rle).astype(np.bool_, copy=False)
+
+
+class CocoOverflow:
+    def __init__(self, document: Mapping[str, Any], *, category_name: str = "Overflow") -> None:
+        self._document = deepcopy(dict(document))
+        self.categories = self._document["categories"]
+        selected = [item for item in self.categories if item["name"].casefold() == category_name.casefold()]
+        if len(selected) != 1:
+            raise ValueError(f"Expected exactly one COCO category named {category_name!r}")
+        
+        self.category = selected[0]
+        self.images: dict[int, dict[str, Any]] = {image["id"]: image for image in self._document["images"]}
+        self._annotations: dict[int, list[dict[str, Any]]] = defaultdict(list)
+        
+        for annotation in self._document["annotations"]:
+            if annotation["category_id"] == self.category["id"]:
+                self._annotations[annotation["image_id"]].append(annotation)
+                
+    
+    @classmethod
+    def from_file(cls, path: str | Path, *, category_name: str = "Overflow") -> CocoOverflow:
+        return cls(json.loads(Path(path).read_text(encoding="utf-8-sig")), category_name=category_name)
+    
+    def for_image(self, image_id: int) -> tuple[dict[str, Any], ...]:
+        if image_id not in self.images:
+            raise KeyError(f"Unknown COCO image ID {image_id}")
+        return tuple(self._annotations.get(image_id, ()))
+    
+    def select_images(self, manifest: SplitManifest, split: str) -> list[int]:
+        return [key for key, image in self.images.items() if manifest.split_for(image["file_name"]) == split]
+    
+    def masks_for_image(self, image_id: int) -> Any:
+        image = self.images[image_id]
+        masks = [decode_coco_mask(item, image["width"], image["height"]) for item in self.for_image(image_id)]
+        return np.stack(masks) if masks else np.empty((0, image["height"], image["width"]), dtype=np.bool_)
+
+    def to_coco(self) -> dict[str, Any]:
+        return deepcopy({
+            **self._document,
+            "categories": [self.category],
+            "annotations": [item for item in self._document["annotations"] if item["category_id"] == self.category["id"]]
+        })
