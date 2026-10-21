@@ -1,6 +1,6 @@
+from __future__ import annotations
 import json
 import numpy as np
-from __future__ import annotations
 from collections import defaultdict
 from collections.abc import Iterable, Mapping, Sequence
 from pycocotools import mask as mask_utils

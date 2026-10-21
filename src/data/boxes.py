@@ -37,7 +37,7 @@ def xyxy_to_xywhn(box: Sequence[float], width: int, height: int, *, clip: bool =
     ), normalized=True)
     
 
-def coco_cywh_to_xyxy(box: Sequence[float]) -> Box:
+def coco_xywh_to_xyxy(box: Sequence[float]) -> Box:
     x, y, width, height = _box(box)
     return x, y, x + width, y + height
 
