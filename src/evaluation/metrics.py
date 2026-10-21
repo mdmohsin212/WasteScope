@@ -105,7 +105,7 @@ def detection_errors(
     matched_gt, missed_gt, false_ids, reviewed_ids = set(), set(), set(), set()
     
     for item in evaluator.evalImgs:
-        if item in None or item["aRng"] != area:
+        if item is None or item["aRng"] != area:
             continue
         
         keep = (np.asarray(item["dtScores"]) > confidence) & ~item["dtIgnore"][threshold].astype(bool)
