@@ -15,31 +15,46 @@ class DetectionErrors:
     reviewed_prediction_ids: set[int]
     
 
-def evaluate_coco(ground_truth: dict, predictions: list[dict]) -> COCOeval:
+def evaluate_coco(
+    ground_truth: dict,
+    predictions: list[dict], *,
+    iou_type: str = "bbox",
+) -> COCOeval:
     if not ground_truth["images"] or not ground_truth["categories"]:
         raise ValueError("COCO evaluation needs images and categories")
-    
+
     gt = COCO()
     gt.dataset = deepcopy(ground_truth)
     gt.dataset.setdefault("info", {})
     gt.createIndex()
-    
-    unknown = {item["category_id"] for item in predictions} - set(gt.cats)
+
+    unknown = {
+        item["category_id"] for item in predictions
+    } - set(gt.cats)
+
     if unknown:
-        raise ValueError(f"Unknown prediction category IDs: {sorted(unknown)}")
-    
+        raise ValueError(
+            f"Unknown prediction category IDs: {sorted(unknown)}"
+        )
+
     if predictions:
-        dt = gt.loadRes(deepcopy(predictions))
+        results = deepcopy(predictions)
+
+        if iou_type == "segm":
+            for item in results:
+                item.pop("bbox", None)
+
+        dt = gt.loadRes(results)
     else:
         dt = COCO()
         dt.dataset = {
             "images": gt.dataset["images"],
-            "categories": gt.dataset["categories"], "annotations": []
+            "categories": gt.dataset["categories"],
+            "annotations": []
         }
         dt.createIndex()
-        
-    
-    evaluator = COCOeval(gt, dt, "bbox")
+
+    evaluator = COCOeval(gt, dt, iou_type)
     evaluator.params.maxDets = [1, 10, 100]
     evaluator.evaluate()
     evaluator.accumulate()
