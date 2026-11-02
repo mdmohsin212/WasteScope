@@ -43,9 +43,7 @@ def _sequence_data(frames, gt, predictions):
             g[["x1", "y1", "x2", "y2"]].to_numpy(dtype=float),
             p[["x1", "y1", "x2", "y2"]].to_numpy(dtype=float),
         )
-        similarity *= (
-            g.ClassID.to_numpy()[:, None] == p.ClassID.to_numpy()[None, :]
-        )
+        similarity *= g.ClassID.to_numpy()[:, None] == p.ClassID.to_numpy()[None, :]
         data["similarity_scores"].append(similarity)
         
     return data
@@ -71,9 +69,7 @@ def evaluate_tracking(frames, annotations, predictions):
         ("x1", "xc", "w", "Width", -1), ("y1", "yc", "h", "Height", -1),
         ("x2", "xc", "w", "Width", 1), ("y2", "yc", "h", "Height", 1)
     ):
-        gt[name] = (
-            (gt[center] + sign * gt[size] / 2) * gt[dimension]
-        ).clip(lower=0, upper=gt[dimension])
+        gt[name] = ((gt[center] + sign * gt[size] / 2) * gt[dimension]).clip(lower=0, upper=gt[dimension])
 
     metrics = {
         "HOTA": HOTA(),
@@ -113,9 +109,54 @@ def evaluate_tracking(frames, annotations, predictions):
         "MAE": per_sequence.AbsCountError.mean(),
         "RMSE": np.sqrt(np.mean(per_sequence.CountError ** 2)),
         "SAD": int(per_sequence.AbsCountError.sum()),
-        "MAPE": 100 * (
-            per_sequence.AbsCountError / per_sequence.GT.replace(0, np.nan)
-        ).mean()
+        "MAPE": 100 * (per_sequence.AbsCountError / per_sequence.GT.replace(0, np.nan)).mean()
     }])
     
     return overall, per_sequence
+
+
+def postprocess_tracks(tracks, frames, min_frames=10, max_gap=5, max_distance=0.05):
+    result = tracks.copy()
+    result["OriginalTrackID"] = result["TrackID"]
+
+    for sequence, group in tracks.groupby("Sequence", sort=True):
+        shape = frames.loc[frames.Sequence.eq(sequence)].iloc[0]
+        scale = np.array([shape.Width, shape.Height], dtype=float)
+        segments = []
+
+        for track_id, track in group.groupby("TrackID"):
+            track = track.sort_values("Frame")
+            boxes = track[["x1", "y1", "x2", "y2"]].iloc[[0, -1]].to_numpy()
+            centers = (boxes[:, :2] + boxes[:, 2:]) / 2 / scale
+
+            segments.append({
+                "id": int(track_id),
+                "start": int(track.Frame.iloc[0]),
+                "end": int(track.Frame.iloc[-1]),
+                "class": int(track.ClassID.mode().iloc[0]),
+                "first": centers[0],
+                "last": centers[1]
+            })
+
+        roots = []
+        for segment in sorted(segments, key=lambda x: (x["start"], x["id"])):
+            candidates = []
+
+            for index, root in enumerate(roots):
+                gap = segment["start"] - root["end"] - 1
+                distance = float(np.linalg.norm(segment["first"] - root["last"]))
+                
+                if (root["class"] == segment["class"] and 0 <= gap <= max_gap and distance <= max_distance):
+                    candidates.append((distance, gap, root["id"], index))
+
+            if candidates:
+                _, _, root_id, index = min(candidates)
+                mask = (result.Sequence.eq(sequence) & result.TrackID.eq(segment["id"]))
+                result.loc[mask, "TrackID"] = root_id
+                roots[index].update(end=segment["end"], last=segment["last"])
+            else:
+                roots.append(segment.copy())
+
+    hits = result.groupby(["Sequence", "TrackID"])["Frame"].transform("nunique")
+    result["CountEligible"] = hits >= min_frames
+    return result
