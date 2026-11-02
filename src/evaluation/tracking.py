@@ -90,11 +90,22 @@ def evaluate_tracking(frames, annotations, predictions):
             sequence_results[name] = metric.eval_sequence(data)
             results[name][sequence] = sequence_results[name]
 
-        error = data["num_tracker_ids"] - data["num_gt_ids"]
+        counted = predictions[predictions.Sequence.eq(sequence)]
+        
+        if "CountEligible" in counted.columns:
+            counted = counted[counted["CountEligible"]]
+
+        predicted_count = int(counted.TrackID.nunique())
+        error = predicted_count - data["num_gt_ids"]
+
         rows.append({
-            "Sequence": sequence, **_scores(sequence_results),
-            "GT": data["num_gt_ids"], "Predicted": data["num_tracker_ids"],
-            "CountError": error, "AbsCountError": abs(error)
+            "Sequence": sequence,
+            **_scores(sequence_results),
+            "GT": data["num_gt_ids"],
+            "RawTracks": data["num_tracker_ids"],
+            "Predicted": predicted_count,
+            "CountError": error,
+            "AbsCountError": abs(error)
         })
 
     per_sequence = pd.DataFrame(rows).set_index("Sequence")
@@ -105,6 +116,7 @@ def evaluate_tracking(frames, annotations, predictions):
     overall = pd.DataFrame([{
         **_scores(combined),
         "GT": int(per_sequence.GT.sum()),
+        "RawTracks": int(per_sequence.RawTracks.sum()),
         "Predicted": int(per_sequence.Predicted.sum()),
         "MAE": per_sequence.AbsCountError.mean(),
         "RMSE": np.sqrt(np.mean(per_sequence.CountError ** 2)),
