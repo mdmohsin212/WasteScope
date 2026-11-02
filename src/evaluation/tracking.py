@@ -47,7 +47,8 @@ def _sequence_data(frames, gt, predictions):
             g.ClassID.to_numpy()[:, None] == p.ClassID.to_numpy()[None, :]
         )
         data["similarity_scores"].append(similarity)
-        return data
+        
+    return data
     
 
 def _scores(results):
