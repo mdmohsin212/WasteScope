@@ -1,9 +1,9 @@
 from pathlib import Path
 import modal
 
-GPU = "L4"
+GPU = "RTX-PRO-6000"
 RUN_NAME = "S2_yolo26n_seg_roi_960"
-IMGSZ, BATCH, VAL_BATCH, WORKERS = 960, 8, 8, 4
+IMGSZ, BATCH, VAL_BATCH, WORKERS = 960, 64, 32, 8
 HERE = Path(__file__).resolve().parent
 
 image = (
@@ -156,3 +156,9 @@ def train_s2():
             backup(trainer, force=True)
     print(f"Best checkpoint: {drive_run}/weights/best.pt", flush=True)
     print(f"Canonical results: {drive_run}/best_canonical_metrics.json", flush=True)
+
+
+@app.local_entrypoint()
+def main():
+    call = train_s2.spawn()
+    print("Job submitted:", call.object_id)
