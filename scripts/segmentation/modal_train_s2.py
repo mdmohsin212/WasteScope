@@ -1,5 +1,21 @@
 from pathlib import Path
 import modal
+import hashlib
+import json
+import os
+import platform
+import shutil
+import subprocess
+import time
+from importlib.metadata import version
+from zipfile import ZipFile
+import cv2
+import torch
+import ultralytics
+import yaml
+from tqdm.auto import tqdm
+from ultralytics import YOLO
+from scripts.segmentation.s2_monitor import CanonicalROITrainer, FullImageMonitor
 
 GPU = "RTX-PRO-6000"
 RUN_NAME = "S2_yolo26n_seg_roi_960"
@@ -15,36 +31,19 @@ image = (
     .add_local_file(str(HERE / "s2_monitor.py"), "/root/s2_monitor.py")
     .add_local_file(str(HERE / "rclone.conf"), "/root/rclone.conf")
 )
+
 app = modal.App("wastescope-segmentation-s2")
 
 @app.function(image=image, gpu=GPU, timeout=24 * 60 * 60)
 def train_s2():
-    import hashlib
-    import json
-    import os
-    import platform
-    import shutil
-    import subprocess
-    import time
-    from importlib.metadata import version
-    from zipfile import ZipFile
-
     root = Path("/tmp/wastescope")
     root.mkdir(parents=True, exist_ok=True)
     os.chdir(root)
-    for key, folder in {"XDG_CACHE_HOME": "cache", "TORCH_HOME": "cache/torch",
-                        "YOLO_CONFIG_DIR": "cache/ultralytics"}.items():
+    
+    for key, folder in {"XDG_CACHE_HOME": "cache", "TORCH_HOME": "cache/torch", "YOLO_CONFIG_DIR": "cache/ultralytics"}.items():
         directory = root / folder
         directory.mkdir(parents=True, exist_ok=True)
         os.environ[key] = str(directory)
-
-    import cv2
-    import torch
-    import ultralytics
-    import yaml
-    from tqdm.auto import tqdm
-    from ultralytics import YOLO
-    from s2_monitor import CanonicalROITrainer, FullImageMonitor
 
     cv2.setNumThreads(1)
     config = root / "rclone.conf"
@@ -71,6 +70,7 @@ def train_s2():
         rclone("copyto", f"{prepared}/{split}.zip", archive_path,
                "--progress", "--stats", "10s", "--buffer-size", "16M",
                "--multi-thread-streams", "4", "--retries", "5")
+        
         with ZipFile(archive_path) as archive:
             for member in tqdm(archive.infolist(), desc=f"Extracting {split}"):
                 archive.extract(member, data)
@@ -78,8 +78,10 @@ def train_s2():
 
     dataset = yaml.safe_load((data / "data.yaml").read_text())
     dataset.update(path=str(data), train="train/images", val="val/images")
+    
     (data / "data.yaml").write_text(yaml.safe_dump(dataset, sort_keys=False))
     monitor = FullImageMonitor(data, batch=VAL_BATCH, encoding_workers=4)
+    
     gpu = torch.cuda.get_device_properties(0)
     print(f"GPU: {gpu.name}; VRAM: {gpu.total_memory / 1024**3:.1f} GiB", flush=True)
     print(f"PyTorch: {torch.__version__}; Ultralytics: {ultralytics.__version__}", flush=True)
@@ -89,6 +91,7 @@ def train_s2():
         try:
             rclone("copy", trainer.save_dir, drive_run, "--retries", "5", "--stats", "0", timeout=180)
             print(f"Drive backup complete ({time.monotonic() - started:.1f}s)", flush=True)
+            
         except (OSError, subprocess.SubprocessError) as error:
             print(f"Drive backup failed: {error}; local run: {trainer.save_dir}", flush=True)
             if force:
@@ -99,12 +102,14 @@ def train_s2():
         run = Path(trainer.save_dir)
         for name in ("modal_train_s2.py", "s2_monitor.py"):
             shutil.copy2(Path("/root") / name, run / name)
+            
         for name in ("roi_policy.json", "video_split.json", "data.yaml", "val/annotations.json",
                      "train/preparation_summary.json", "val/preparation_summary.json",
                      "support/s1_val_metrics.json", "support/s1_val_predictions.json"):
             destination = run / name
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(data / name, destination)
+            
         context = {
             "prepared_source": prepared,
             "checkpoint_selection": "canonical full-original-image S1+ROI mask AP50-95",
@@ -113,8 +118,11 @@ def train_s2():
             "comparison_limitations": "S0/S1 used native checkpoint selection; S2 uses canonical fused AP and more ROI training samples",
             "s1_branch": "frozen cached validation predictions from the recorded S1 checkpoint",
             "fusion_suppression": "mask IoU >= roi_policy.fusion_iou; S1 first on score ties",
-            "roi_validation": {"batch": VAL_BATCH, "imgsz": IMGSZ, "half": True,
-                               "retina_masks": True, "rect": False,
+            "roi_validation": {"batch": VAL_BATCH, 
+                               "imgsz": IMGSZ, 
+                               "half": True,
+                               "retina_masks": True, 
+                               "rect": False,
                                "projection": "nearest-neighbour binary mask resize into original ROI"},
             "effective_train_crops": len(trainer.train_loader.dataset),
             "original_validation_images": len(monitor.gt.imgs),
@@ -126,7 +134,7 @@ def train_s2():
             "environment": {"python": platform.python_version(), "torch": torch.__version__,
                             "torchvision": version("torchvision"), "ultralytics": ultralytics.__version__,
                             "pycocotools": version("pycocotools"), "numpy": version("numpy"),
-                            "opencv": cv2.__version__, "cuda": torch.version.cuda, "gpu": gpu.name},
+                            "opencv": cv2.__version__, "cuda": torch.version.cuda, "gpu": gpu.name}
         }
         (run / "run_context.json").write_text(json.dumps(context, indent=2, default=str))
         backup(trainer, force=True)

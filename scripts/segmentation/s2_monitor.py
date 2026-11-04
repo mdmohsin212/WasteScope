@@ -8,7 +8,6 @@ from contextlib import redirect_stdout
 from copy import deepcopy
 from pathlib import Path
 from types import SimpleNamespace
-
 import cv2
 import numpy as np
 from pycocotools import mask as mask_utils
@@ -22,31 +21,38 @@ from ultralytics.models.yolo.segment.train import SegmentationTrainer
 METRIC_KEYS = ["metrics/canonical_mask_AP50", "metrics/canonical_mask_AP50-95"]
 
 def project_mask(mask, rect, image_shape):
-    """Encode a crop mask in original coordinates without a full-image canvas."""
     x1, y1, x2, y2 = rect
     height, width = image_shape
     if mask.shape != (y2 - y1, x2 - x1):
         mask = cv2.resize(mask, (x2 - x1, y2 - y1), interpolation=cv2.INTER_NEAREST)
+        
     mask = (mask > 0).astype(np.uint8)
     left, top, crop_width, crop_height = cv2.boundingRect(mask)
     if not crop_width:
         return None
+    
     mask = mask[top:top + crop_height, left:left + crop_width]
     x1, y1 = x1 + left, y1 + top
     flat = np.pad(mask, ((1, 1), (0, 0))).ravel(order="F")
     edges = np.flatnonzero(flat[1:] != flat[:-1]) + 1
+    
     if not edges.size:
         return None
+    
     local_height = mask.shape[0] + 2
     starts, ends = edges[::2], edges[1::2]
+    
     starts = (x1 + starts // local_height) * height + y1 + starts % local_height - 1
     ends = (x1 + ends // local_height) * height + y1 + ends % local_height - 1
+    
     adjacent = starts[1:] == ends[:-1]
     starts, ends = starts[np.r_[True, ~adjacent]], ends[np.r_[~adjacent, True]]
     counts = np.empty(2 * len(starts) + 1, dtype=np.int64)
+    
     counts[0], counts[-1] = starts[0], height * width - ends[-1]
     counts[1:-1:2] = ends - starts
     counts[2:-1:2] = starts[1:] - ends[:-1]
+    
     return mask_utils.frPyObjects({"size": [height, width], "counts": counts.tolist()}, height, width)
 
 
@@ -58,7 +64,6 @@ def candidate(image_id, rle, score):
 
 
 def fuse_masks(predictions, threshold, max_det):
-    """Suppress mask IoU >= threshold; S1 comes first on equal scores."""
     kept = []
     for pred in sorted(predictions, key=lambda item: -item["score"]):
         x, y, w, h = pred["_bbox"]
@@ -67,11 +72,13 @@ def fuse_masks(predictions, threshold, max_det):
             a, b, c, d = other["_bbox"]
             if x < a + c and a < x + w and y < b + d and b < y + h:
                 overlaps.append(other["segmentation"])
+                
         if overlaps and np.any(mask_utils.iou([pred["segmentation"]], overlaps, [0] * len(overlaps)) >= threshold):
             continue
         kept.append(pred)
         if len(kept) == max_det:
             break
+        
     return kept
 
 
@@ -95,9 +102,11 @@ def canonical_ap(ground_truth, predictions):
             detections.dataset = {"images": ground_truth.dataset["images"],
                                   "categories": ground_truth.dataset["categories"], "annotations": []}
             detections.createIndex()
+            
         evaluator = COCOeval(ground_truth, detections, "segm")
         evaluator.params.maxDets = [1, 10, 100]
         evaluator.evaluate()
+        
         evaluator.accumulate()
         evaluator.summarize()
     return {METRIC_KEYS[0]: float(evaluator.stats[1]), METRIC_KEYS[1]: float(evaluator.stats[0])}
@@ -108,15 +117,19 @@ class FullImageMonitor:
         self.data, self.batch, self.encoding_workers = Path(data), batch, encoding_workers
         self.policy = json.loads((self.data / "roi_policy.json").read_text())
         self.index = json.loads((self.data / "val/roi_index.json").read_text())
+        
         s1_metrics = json.loads((self.data / "support/s1_val_metrics.json").read_text())
         if s1_metrics["checkpoint_sha256"] != self.policy["full_image_checkpoint_sha256"]:
             raise ValueError("Frozen S1 predictions do not match roi_policy.json")
+        
         with redirect_stdout(io.StringIO()):
             self.gt = COCO(str(self.data / "val/annotations.json"))
         self.gt.dataset.setdefault("info", {})
+        
         for ann in self.gt.anns.values():
             ann["segmentation"] = self.gt.annToRLE(ann)
         self.s1 = defaultdict(list)
+        
         for pred in json.loads((self.data / "support/s1_val_predictions.json").read_text()):
             rle = pred["segmentation"].copy()
             if isinstance(rle["counts"], str):
@@ -126,6 +139,7 @@ class FullImageMonitor:
     def __call__(self, trainer):
         started = time.monotonic()
         evaluation_model = deepcopy(trainer.ema.ema).half().float().eval()
+        
         predictor = SegmentationPredictor(overrides={
             "task": "segment", "mode": "predict", "imgsz": trainer.args.imgsz,
             "device": 0, "half": True, "batch": self.batch, "rect": False,
