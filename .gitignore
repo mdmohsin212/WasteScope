@@ -32,3 +32,4 @@ __pycache__/
 venv/
 .DS_Store
 note
+rclone.conf
