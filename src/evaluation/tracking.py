@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-from trackeval.metrics import HOTA, CLEAR, Identity
 
 def _iou(a, b):
     low = np.maximum(a[:, None, :2], b[None, :, :2])
@@ -61,6 +60,7 @@ def _scores(results):
 
 
 def evaluate_tracking(frames, annotations, predictions):
+    from trackeval.metrics import HOTA, CLEAR, Identity
     gt = annotations.merge(
         frames[["Sequence", "Frame", "Width", "Height"]],
         on=["Sequence", "Frame"], validate="many_to_one"

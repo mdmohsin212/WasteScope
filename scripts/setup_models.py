@@ -104,7 +104,6 @@ def main(argv=None):
     parser.add_argument("--smoke-test", action="store_true", help="Load each model and run a tiny CPU forward pass.",)
 
     args = parser.parse_args(argv)
-    
     manifest = json.loads((ROOT / "models/manifest.json").read_text(encoding="utf-8"))
     models = manifest["models"]
 
@@ -119,7 +118,6 @@ def main(argv=None):
         smoke_test(models, args.models_dir)
         
     print("Three checkpoints ready. No dataset downloads or training performed.")
-
 
 if __name__ == "__main__":
     try:
