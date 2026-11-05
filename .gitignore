@@ -33,3 +33,4 @@ venv/
 .DS_Store
 note
 rclone.conf
+# .\venv\Scripts\Activate.ps1

@@ -1,0 +1,34 @@
+schema_version: 1
+run: T3_botsort
+detector_config: detection.yaml
+apply_detection_operating_point: false
+tracker_frame_rate_argument: 30
+
+tracker:
+  tracker_type: botsort
+  track_high_thresh: 0.45
+  track_low_thresh: 0.10
+  new_track_thresh: 0.25
+  track_buffer: 30
+  match_thresh: 0.80
+  fuse_score: true
+  gmc_method: sparseOptFlow
+  proximity_thresh: 0.50
+  appearance_thresh: 0.80
+  with_reid: false
+  model: auto
+
+postprocessing:
+  min_frames: 10
+  max_gap: 5
+  max_distance: 0.05
+  same_class_only: true
+  duration_unit: distinct_observed_frames
+  duration_filter_scope: counting_only
+  finalize_counts: end_of_video
+  reset_state: every_video
+
+provenance:
+  selected_on: val
+  selected_config: reports/tracking/final/selected_config.json
+  test_report: reports/tracking/T3_botsort/test

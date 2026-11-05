@@ -1,0 +1,66 @@
+schema_version: 1
+run: S2_yolo26n_seg_roi_960
+variant: fused
+class_name: Overflow
+yolo_class_id: 0
+coco_category_id: 1
+models:
+  proposals: detector
+  full_image: segmenter_full
+  roi: segmenter_roi
+
+
+proposal_inference:
+  imgsz: 960
+  conf: 0.05
+  max_det: 300
+  half: true
+  rect: false
+  nms: false
+  iou: 0.7
+  agnostic_nms: false
+  augment: false
+
+segment_inference:
+  imgsz: 960
+  conf: 0.001
+  max_det: 100
+  half: true
+  rect: false
+  retina_masks: true
+  classes: [0]
+  augment: false
+
+full_image_batch: 1
+roi_batch: 8
+
+roi:
+  crop_factor: 3
+  minimum_side: 512
+  stored_long_side: 960
+  resize: cap_long_side_without_upscaling
+  resize_interpolation: linear
+  crop_edges: shift_inside_image_then_floor_ceil
+  duplicate_crops: remove_exact_bounds
+  mask_projection_interpolation: nearest
+  jitter: false
+  full_frame_roi_fallback: false
+
+fusion:
+  method: score_ordered_mask_iou_nms
+  suppress_when_iou: ">="
+  iou: 0.50
+  max_det: 100
+  equal_score_priority: full_image
+  no_proposals: keep_full_image_branch
+
+operating_point:
+  selected_on: val
+  rule: score > threshold
+  confidence: 0.20
+
+provenance:
+  selected_epoch: 1
+  selection_metric: canonical_fused_mask_AP50_95
+  selected_system: reports/segmentation/S2_yolo26n_seg_roi_960/test_best_960_fused_conf0.2/selected_system.json
+  test_report: reports/segmentation/S2_yolo26n_seg_roi_960/test_best_960_fused_conf0.2

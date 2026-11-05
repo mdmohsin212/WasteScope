@@ -1,0 +1,34 @@
+schema_version: 1
+run: D1_yolo26n_960
+model: detector
+classes:
+  - container_yellow
+  - container_green
+  - container_default
+  - container_blue
+  - container_oil
+  - container_battery
+  - container_biodegradable
+
+inference:
+  imgsz: 960
+  conf: 0.001
+  max_det: 300
+  half: True
+  rect: True
+  nms: False
+  iou: 0.7
+  agnostic_nms: false
+  augment: false
+
+
+operating_point:
+  selected_on: val
+  rule: score > threshold
+  default_confidence: 0.35
+  class_confidences:
+    container_oil: 0.20
+  
+provenance:
+  operating_point: reports/detection/D1_yolo26n_960/val_960/confidence_tuning/selected_operating_point.json
+  test_report: reports/detection/D1_yolo26n_960/test_960
