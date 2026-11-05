@@ -1,1 +1,0 @@
-"""Container tracking across frames."""
