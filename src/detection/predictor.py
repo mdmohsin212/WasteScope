@@ -21,12 +21,14 @@ class Detector:
     
     def filter(self, raw):
         policy = self.config["operating_point"]
+        class_conf = policy.get("class_confidences", {})
+        
         thresholds = np.array([
-            policy["class_confidences"].get(name, policy["default_confidence"])
-        ] for name in self.names)
+            class_conf.get(name, policy["default_confidence"])
+            for name in self.names
+        ])
         
         keep = (raw.data[:, 4] > thresholds[raw.data[:, 5].astype(int)])
-        
         return Detections(raw.data[keep].copy(), raw.image_shape)
 
     def predict(self, image):
