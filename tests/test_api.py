@@ -98,6 +98,26 @@ class ApiTests(unittest.TestCase):
             
             with TestClient(app) as client:
                 self.assertEqual(client.get(f"/jobs/{folder.name}").json()["state"],"interrupted")
+    
+    def test_web_ui_and_preview(self):
+        with TemporaryDirectory() as root:
+            app = create_app(output_root=root, factory=FakePipeline)
+
+            with TestClient(app) as client:
+                response = client.get("/")
+                self.assertEqual(response.status_code, 200)
+                self.assertIn("WasteScope", response.text)
+
+                for filename in ("app.css", "app.js"):
+                    self.assertEqual(client.get(f"/static/{filename}").status_code, 200)
+
+                response = client.post("/jobs", files={"file": ("sample.png", b"valid")})
+                job = self.terminal(client, response.json()["job_id"])
+                url = job["files"]["annotated.png"]
+
+                self.assertIn("attachment", client.get(url).headers["content-disposition"])
+                self.assertIn("inline", client.get(url + "?inline=true").headers["content-disposition"])
+                self.assertEqual(client.get(url, headers={"Range": "bytes=0-2"}).status_code, 206)
                 
 
 if __name__ == "__main__":

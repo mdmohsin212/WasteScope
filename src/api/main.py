@@ -5,8 +5,10 @@ from pathlib import Path
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse, RedirectResponse
 from .jobs import BusyError, FILES, Jobs
+from fastapi.staticfiles import StaticFiles
 
 ROOT = Path(__file__).resolve().parents[2]
+WEB = ROOT / "web"
 IMAGE_TYPES = {".jpg", ".jpeg", ".png", ".webp"}
 VIDEO_TYPES = {".mp4", ".mov", ".avi", ".mkv"}
 
@@ -30,10 +32,11 @@ def create_app(*, output_root=None, factory=pipeline_factory, max_upload_mb=200)
             app.state.jobs.close()
 
     app = FastAPI(title="WasteScope",version="1.0.0", lifespan=lifespan)
+    app.mount("/static", StaticFiles(directory=WEB), name="static")
 
     @app.get("/", include_in_schema=False)
     def home():
-        return RedirectResponse("/docs")
+        return FileResponse(WEB / "index.html")
 
     @app.get("/health")
     def health():
@@ -104,14 +107,16 @@ def create_app(*, output_root=None, factory=pipeline_factory, max_upload_mb=200)
         return json.loads(path.read_text(encoding="utf-8"))
 
     @app.get("/jobs/{job_id}/files/{name}")
-    def download(job_id: str, name: str):
+    def download(job_id: str, name: str, inline: bool = False):
         if name not in FILES:
             raise HTTPException(404, "File not found.")
 
         path = completed_folder(job_id) / name
         if not path.is_file():
             raise HTTPException(404, "File not found.")
-        return FileResponse(path, filename=name)
+
+        disposition = "inline" if inline else "attachment"
+        return FileResponse(path, filename=name, content_disposition_type=disposition)
 
     return app
 

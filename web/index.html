@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Detect containers, track unique objects, and segment waste overflow.">
+  <title>WasteScope · Urban Waste Intelligence</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="WasteScope home">
+      <span class="mark">W</span>WasteScope
+    </a>
+    <span class="edition">URBAN WASTE INTELLIGENCE</span>
+    <a href="/docs" target="_blank" rel="noopener">API docs</a>
+  </header>
+
+  <main>
+    <section class="intro">
+      <p class="eyebrow">FROM STREET VIEW TO CLEARER INSIGHT</p>
+      <h1>A clearer view of<br><span>urban waste.</span></h1>
+      <p>Find containers, follow them across frames, and see where waste overflows.</p>
+      <div class="capabilities">
+        <span>01 / Detection</span>
+        <span>02 / Tracking & counting</span>
+        <span>03 / Overflow masks</span>
+      </div>
+    </section>
+
+    <div class="workspace">
+      <section class="panel upload-panel" aria-labelledby="upload-title">
+        <div class="section-heading">
+          <span class="step">01</span>
+          <h2 id="upload-title">Start with your media</h2>
+        </div>
+
+        <form id="upload-form">
+          <div id="dropzone" class="dropzone">
+            <svg viewBox="0 0 32 32" width="36" height="36" fill="none" aria-hidden="true">
+              <path d="M16 21V5m-6 6 6-6 6 6M5 21v6h22v-6"
+                    stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <p>Drop an image or video</p>
+            <label class="sr-only" for="file">Choose an image or video</label>
+            <input id="file" type="file"
+                   accept=".jpg,.jpeg,.png,.webp,.mp4,.mov,.avi,.mkv">
+            <small>JPG, PNG, WEBP · MP4, MOV, AVI, MKV<br>Up to 200 MiB per file</small>
+          </div>
+
+          <p id="selection" class="selection">No file selected</p>
+          <button id="submit" class="primary" type="submit" disabled>Analyze media <svg viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true"><path d="M3 13 13 3M4 3h9v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </form>
+
+        <p class="hint">
+          Images show detections and overflow masks. Videos also include
+          tracking and unique container counts.
+        </p>
+
+        <section id="job-status" class="job-status" hidden
+                 aria-live="polite" aria-atomic="true">
+          <div class="status-heading">
+            <strong id="state">Ready</strong>
+            <span id="frame-progress"></span>
+          </div>
+          <progress id="progress" max="1" aria-label="Processing progress"></progress>
+          <p id="status-message"></p>
+        </section>
+      </section>
+
+      <section class="panel result-panel" aria-labelledby="result-title">
+        <div class="section-heading">
+          <span class="step">02</span>
+          <h2 id="result-title">Your results</h2>
+          <span id="result-badge" class="badge">Awaiting upload</span>
+        </div>
+
+        <div id="empty" class="empty">
+          <div class="empty-symbol" aria-hidden="true">⌖</div>
+          <h3>One upload. A fuller picture.</h3>
+          <p>Your annotated image or video will appear here when processing finishes.</p>
+        </div>
+
+        <div id="result" hidden>
+          <p id="result-name" class="result-name"></p>
+
+          <div class="viewer">
+            <img id="image" alt="Container detections and overflow masks" hidden>
+            <video id="video" controls playsinline preload="metadata" hidden></video>
+          </div>
+
+          <div id="metrics" class="metrics"></div>
+          <p id="count-note" class="hint"></p>
+
+          <h3 class="small-heading">Container breakdown</h3>
+          <dl id="counts" class="counts"></dl>
+
+          <h3 class="small-heading">Download results</h3>
+          <nav id="downloads" class="downloads" aria-label="Result downloads"></nav>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      WasteScope
+      <span>Detection · Tracking · Overflow segmentation</span>
+    </footer>
+  </main>
+</body>
+</html>
