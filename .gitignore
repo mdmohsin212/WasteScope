@@ -19,6 +19,18 @@
 /weights/
 /checkpoints/
 
+/reports/**/private/
+/reports/**/failure_cases/
+/reports/**/val_batch*.jpg
+/reports/**/train_batch*.jpg
+/reports/**/failure_*.jpg
+/reports/**/error_examples.png
+/reports/**/*predictions.json
+/reports/**/coco_ground_truth.json
+/reports/**/frames*.jsonl
+/reports/**/tracks.csv
+/reports/**/*.mp4
+
 # Credentials and Python/Colab artifacts
 .env
 .env.*

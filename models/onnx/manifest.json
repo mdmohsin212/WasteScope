@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "source_release_id": "wastescope-inference-foundation-v1",
+  "export_settings": {
+    "format": "onnx",
+    "imgsz": 960,
+    "dynamic": true,
+    "half": false,
+    "batch": 1,
+    "opset": 17,
+    "simplify": false,
+    "nms": false,
+    "device": "cpu",
+    "max_det": 300
+  },
+  "models": {
+    "detector": {
+      "filename": "D1_yolo26n_960.132634e92c7b.onnx",
+      "sha256": "132634e92c7b16e1c548f888584e1bcb21167f24a1ce06bd9c3669f3db6487ad",
+      "source_sha256": "cd6b987150bb2106321e59b61ac080a043d451994eb1e1cf99bd192a271109ea",
+      "task": "detect",
+      "classes": [
+        "container_yellow",
+        "container_green",
+        "container_default",
+        "container_blue",
+        "container_oil",
+        "container_battery",
+        "container_biodegradable"
+      ],
+      "tested_input_shapes": [
+        [
+          1,
+          3,
+          960,
+          960
+        ],
+        [
+          1,
+          3,
+          544,
+          960
+        ]
+      ]
+    },
+    "segmenter_full": {
+      "filename": "S1_yolo26n_seg_960.9f4053328894.onnx",
+      "sha256": "9f40533288946a75c2e924ed4bc8cab9fd3fdb5e228fb30ef59eea787e4d0c31",
+      "source_sha256": "1b8b41a691c0e51691565d4a50ffe7db50aaab144050b62b040548eae547a670",
+      "task": "segment",
+      "classes": [
+        "Overflow"
+      ],
+      "tested_input_shapes": [
+        [
+          1,
+          3,
+          960,
+          960
+        ]
+      ]
+    },
+    "segmenter_roi": {
+      "filename": "S2_yolo26n_seg_roi_960.46fe15e7957c.onnx",
+      "sha256": "46fe15e7957ce567c0dab333f084451f9fb7ce18d4acb70dda44a57ea30df839",
+      "source_sha256": "c819c5b1e82228f33fd86e72365f8f841898acd88de2411f9e4541684256356f",
+      "task": "segment",
+      "classes": [
+        "Overflow"
+      ],
+      "tested_input_shapes": [
+        [
+          1,
+          3,
+          960,
+          960
+        ],
+        [
+          2,
+          3,
+          960,
+          960
+        ]
+      ]
+    }
+  },
+  "versions": {
+    "torch": "2.11.0",
+    "ultralytics": "8.4.1",
+    "onnx": "1.19.1",
+    "onnxruntime": "1.23.2"
+  },
+  "validation": "Graph/finite-output checks passed; run check_onnx.py for real-image conversion parity."
+}

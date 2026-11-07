@@ -7,7 +7,7 @@ def expanded_rois(boxes, width, height, config):
     rects = []
     
     for box in boxes:
-        x1, y1, x2, y2 = math(float, box)
+        x1, y1, x2, y2 = map(float, box)
         side = max(
             config["crop_factor"] * (x2 - x1),
             config["crop_factor"] * (y2 - y1),

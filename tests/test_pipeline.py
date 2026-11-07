@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 from pycocotools import mask as mask_utils
 from src.pipeline import media, runner
+from src.segmentation.masks import expanded_rois
 
 NAMES = [
     "container_yellow", "container_green", "container_default", "container_blue",
@@ -209,6 +210,16 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(process.wait.call_count, 2)
         self.assertTrue(writer.log.closed)
 
+
+class MaskGeometryTests(unittest.TestCase):
+    def test_roi_bounds_and_duplicates(self):
+        config = {"crop_factor": 3, "minimum_side": 512}
+        boxes = [[100, 100, 200, 200]] * 2
+        self.assertEqual(
+            expanded_rois(boxes, 640, 480, config),
+            [(0, 0, 512, 480)]
+        )
+        self.assertEqual(expanded_rois([], 640, 480, config), [])
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
