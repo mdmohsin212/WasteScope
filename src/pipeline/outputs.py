@@ -7,11 +7,14 @@ from pathlib import Path
 import platform
 import time
 from uuid import uuid4
+from contextvars import ContextVar
+import logging
 
 PACKAGES = [
     "torch", "ultralytics", "numpy", "opencv-python",
     "pycocotools", "lap", "imageio-ffmpeg"
 ]
+STATUS_SINK = ContextVar("wastescope_status_sink", default=None)
 
 def _now():
     return datetime.now(timezone.utc).isoformat()
@@ -82,7 +85,15 @@ class RunOutput:
             self.fail(error)
 
     def _status(self, **fields):
-        write_json(self.folder / "status.json", {**fields, "updated_utc": _now()})
+        payload = {**fields, "updated_utc": _now()}
+        write_json(self.folder / "status.json", payload)
+
+        sink = STATUS_SINK.get()
+        if sink is not None:
+            try:
+                sink(payload)
+            except Exception:
+                logging.exception("Could not publish progress; local status was saved.")
             
     def progress(self, phase, frames, total=None, *, force=False):
         now = time.monotonic()

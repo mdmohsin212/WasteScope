@@ -119,6 +119,9 @@ class Jobs:
                 if (folder / name).is_file()
             }
         return job
-
+    
+    def artifact(self, job_id, name):
+        return self.result_folder(job_id) / name
+    
     def close(self):
         self.executor.shutdown(wait=True)

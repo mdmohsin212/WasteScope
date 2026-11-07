@@ -21,11 +21,11 @@ def pipeline_factory():
     return WasteScopePipeline(runtime)
 
 
-def create_app(*, output_root=None, factory=pipeline_factory, max_upload_mb=200):
+def create_app(*, output_root=None, factory=pipeline_factory, max_upload_mb=200, jobs_factory=Jobs):
     @asynccontextmanager
     async def lifespan(app):
         root = output_root or os.getenv("WASTESCOPE_OUTPUTS", str(ROOT / "outputs/api"))
-        app.state.jobs = Jobs(root, factory)
+        app.state.jobs = jobs_factory(root, factory)
         try:
             yield
         finally:
@@ -42,7 +42,7 @@ def create_app(*, output_root=None, factory=pipeline_factory, max_upload_mb=200)
     def health():
         return {
             "status": "ok",
-            "pipeline_loaded": app.state.jobs.pipeline is not None,
+            "pipeline_loaded": app.state.jobs.pipeline is not None
         }
 
     def job_status(job_id):
@@ -94,16 +94,22 @@ def create_app(*, output_root=None, factory=pipeline_factory, max_upload_mb=200)
     def status(job_id: str):
         return job_status(job_id)
 
-    def completed_folder(job_id):
+    def completed_file(job_id, name):
         job_status(job_id)
         try:
-            return app.state.jobs.result_folder(job_id)
+            path = app.state.jobs.artifact(job_id, name)
         except RuntimeError as error:
             raise HTTPException(409, str(error)) from None
+        except FileNotFoundError:
+            raise HTTPException(404, "File not found.") from None
+
+        if not path.is_file():
+            raise HTTPException(404, "File not found.")
+        return path
 
     @app.get("/jobs/{job_id}/result")
     def result(job_id: str):
-        path = completed_folder(job_id) / "summary.json"
+        path = completed_file(job_id, "summary.json")
         return json.loads(path.read_text(encoding="utf-8"))
 
     @app.get("/jobs/{job_id}/files/{name}")
@@ -111,10 +117,7 @@ def create_app(*, output_root=None, factory=pipeline_factory, max_upload_mb=200)
         if name not in FILES:
             raise HTTPException(404, "File not found.")
 
-        path = completed_folder(job_id) / name
-        if not path.is_file():
-            raise HTTPException(404, "File not found.")
-
+        path = completed_file(job_id, name)
         disposition = "inline" if inline else "attachment"
         return FileResponse(path, filename=name, content_disposition_type=disposition)
 
