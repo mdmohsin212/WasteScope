@@ -26,14 +26,14 @@ class ModalJobs:
         job, now = self.states.get(job_id), time.time()
         if not job or job["expires_at"] <= now:
             raise FileNotFoundError(job_id)
-        
+
         if job["state"] == "uploading" and now - job["updated_at"] > 300:
             job.update(state="failed", error="Upload did not finish.", updated_at=now)
             self.states[job_id] = job
-            
-            call_id = self.states.get("call:" + job_id)
-            if (call_id and job["state"] in {"queued", "running"} and now - job["updated_at"] > 30):
-                result = self.get_result(call_id)
+
+        call_id = self.states.get("call:" + job_id)
+        if (call_id and job["state"] in {"queued", "running"} and now - job["updated_at"] > 30):
+            result = self.get_result(call_id)
             if result:
                 job.update(result, updated_at=now)
                 self.states[job_id] = job
