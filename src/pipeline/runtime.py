@@ -9,7 +9,6 @@ import yaml
 from ultralytics import YOLO
 
 ROOT = Path(__file__).resolve().parents[2]
-
 def check_image(image):
     if not isinstance(image, np.ndarray) or image.dtype != np.uint8:
         raise ValueError("Expected an OpenCV BGR uint8 image.")
@@ -36,10 +35,9 @@ class Detections:
             for row in self.data
         ]
 
-
 class Runtime:
     def __init__(self, root=ROOT, *, models_dir=None, device="auto"):
-        self.root = Path(ROOT)
+        self.root = Path(root)
         self.models_dir = (
             Path(models_dir) if models_dir
             else self.root / "models/weights"
@@ -95,11 +93,8 @@ class Runtime:
         
         with self._lock:
             return self._load(model_id).predict(
-                images,
-                **options,
+                images, **options,
                 device=self.device,
-                batch=batch,
-                save=False,
-                verbose=False,
-                stream=False
+                batch=batch, save=False,
+                verbose=False, stream=False
             )

@@ -5,7 +5,6 @@
   "selected_on": "val",
   "python": "3.12",
   "weights_directory": "models/weights",
-  
   "models": {
     "detector": {
       "run": "D1_yolo26n_960",
@@ -29,7 +28,9 @@
       "filename": "S1_yolo26n_seg_960.pt",
       "source_path": "runs/segment/S1_yolo26n_seg_960/weights/best.pt",
       "sha256": "1b8b41a691c0e51691565d4a50ffe7db50aaab144050b62b040548eae547a670",
-      "classes": ["Overflow"]
+      "classes": [
+        "Overflow"
+      ]
     },
     "segmenter_roi": {
       "run": "S2_yolo26n_seg_roi_960",
@@ -37,26 +38,26 @@
       "filename": "S2_yolo26n_seg_roi_960.pt",
       "source_path": "runs/segment/S2_yolo26n_seg_roi_960/weights/best.pt",
       "sha256": "c819c5b1e82228f33fd86e72365f8f841898acd88de2411f9e4541684256356f",
-      "classes": ["Overflow"],
+      "classes": [
+        "Overflow"
+      ],
       "selected_epoch": 1
     }
   },
-
   "configs": {
     "detection": {
       "path": "configs/detection.yaml",
-      "sha256": "cb94b92d247d3752c482da451af14d57317f919f575614acbf42959217b95417"
+      "sha256": "376afca1dfcdc94053c74045c1d57ef7b70a2c1b33a36923896e042b8699b450"
     },
     "tracking": {
       "path": "configs/tracking.yaml",
-      "sha256": "9727bbfe0a86d5ac6ffd206d009b17632c83c0f857ccf67840f5ff75c9854bde"
+      "sha256": "efa0dc4662261fa5926b8e35f84926520c463e32ceb804c2d41d682e91be3c73"
     },
     "segmentation": {
       "path": "configs/segmentation.yaml",
-      "sha256": "1b03a223c39f4adf13392ebd4e4522f3cfec4f00a686dd9978ca99af80ec0e1a"
+      "sha256": "35cb6d5ab4b09d257a747cfab5ad9b66bd0eddbea6482f1b64e2a20b402817cd"
     }
   },
-
   "provenance": {
     "video_split_sha256": "9600095f28b7fa53ddc3a5f1518486150aaf56cd3897b8a44578088348736d84",
     "canonical_evaluator_sha256": "76d0d88644f99c3ae7f0ceb0db6cf562ed0984ed2c3cd6cc2d11b07aad1e7c8b",
@@ -67,28 +68,27 @@
     },
     "checkpoint_selection": "D1/S1 used native training selection; S2 used canonical original-image fused AP; one run per experiment"
   },
-
-  "validation_required_before_deployment": [
-    "Common-environment task regression against frozen reference validation outputs",
-    "Tracking/detection rect=True versus segmentation proposal rect=False parity",
-    "End-to-end latency and memory measurements on the selected GPU"
-  ],
-
   "environment": {
     "runtime": {
       "path": "requirements.txt",
-      "sha256": "e93e877f49eff07edb341a38c872c8e33d219e0e14c0ac758280048562672f52"
+      "sha256": "4d8cae704457cafa1c886cd980706eeaefbc55f3c5c5671702e42a31098ff3d0"
     },
     "evaluation": {
       "path": "requirements-evaluation.txt",
-      "sha256": "3d494dace8b639ae4aa7e5cae855380ea1a0bd9822c7519024d7c01c51a63052"
+      "sha256": "eef1020dea669992ca602c6fc79bfb7108629b38671f2a35f9ccee3012ab8a54"
     }
   },
-
   "verification": {
-    "report": "docs/phase1-verification.md",
+    "report": "docs/setup.md#verification-and-scope",
     "cpu_model_smoke": "passed",
     "cached_coco_replay": "passed",
-    "gpu_inference_parity": "pending_phase_2_regression"
-  }
+    "gpu_inference_parity": "not_verified_on_full_validation",
+    "gpu_benchmark": "reports/benchmarks/20261106T142641Z_5e651b4c/benchmark_aggregate.json",
+    "onnx_sampled_conversion": "reports/onnx_checks/demo_containers_20261107T053955Z_a97bb108/summary.json"
+  },
+  "text_hash_normalization": "configs/environment: UTF-8 without BOM, LF newlines; checkpoint hashes remain binary SHA256",
+  "validation_followups": [
+    "Common-environment task regression against frozen validation references",
+    "Full-sequence tracking/backend parity; detection and ROI proposal profiles checked separately"
+  ]
 }
