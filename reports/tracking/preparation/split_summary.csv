@@ -1,0 +1,4 @@
+Split,Frames,Instances,Tracks,Excluded,FrameGaps,Sequences
+train,7118,23802,264,196,1,66
+val,1480,5698,56,0,0,13
+test,1424,4697,55,0,0,14

@@ -1,0 +1,72 @@
+{
+  "state": "complete",
+  "requested_gpu": "T4",
+  "tasks": [
+    {
+      "file": "benchmark_dense.mp4",
+      "purpose": "benchmark",
+      "source": "StreetView-Waste",
+      "split": "val",
+      "sequence": "0024_1",
+      "frames": 237,
+      "fps": 10.0,
+      "width": 1920,
+      "height": 1080,
+      "duration_seconds": 23.7,
+      "sha256": "da9031fd33a04bd3af88ed717f195c0380e8c62dfbd8447a480befbf3c9bf838",
+      "source_zip": "prepared/tracking/val.zip",
+      "first_source_frame": 0,
+      "last_source_frame": 236,
+      "source_dimensions": [
+        1080,
+        1920
+      ],
+      "frame_map": "frame_maps/benchmark_dense.csv",
+      "publication_status": "private; public display requires dataset permission"
+    },
+    {
+      "file": "benchmark_mixed.mp4",
+      "purpose": "benchmark",
+      "source": "StreetView-Waste",
+      "split": "val",
+      "sequence": "0029_1",
+      "frames": 190,
+      "fps": 10.0,
+      "width": 1920,
+      "height": 1080,
+      "duration_seconds": 19.0,
+      "sha256": "07a6ba3060d7e540f0758ee12e5bdad2baa834b8ebf6cbd271e05415ce4bf0e1",
+      "source_zip": "prepared/tracking/val.zip",
+      "first_source_frame": 0,
+      "last_source_frame": 189,
+      "source_dimensions": [
+        1080,
+        1920
+      ],
+      "frame_map": "frame_maps/benchmark_mixed.csv",
+      "publication_status": "private; public display requires dataset permission"
+    },
+    {
+      "file": "benchmark_occlusion.mp4",
+      "purpose": "benchmark",
+      "source": "StreetView-Waste",
+      "split": "val",
+      "sequence": "0075_1",
+      "frames": 189,
+      "fps": 10.0,
+      "width": 1920,
+      "height": 1080,
+      "duration_seconds": 18.9,
+      "sha256": "637f99850c70e2a5e4ca623c21e93afa05de834382d9460cb66a6b94432326fc",
+      "source_zip": "prepared/tracking/val.zip",
+      "first_source_frame": 0,
+      "last_source_frame": 188,
+      "source_dimensions": [
+        1080,
+        1920
+      ],
+      "frame_map": "frame_maps/benchmark_occlusion.csv",
+      "publication_status": "private; public display requires dataset permission"
+    }
+  ]
+}

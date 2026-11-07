@@ -1,0 +1,50 @@
+{
+  "source_archive": "raw_archives/tracking_task.zip",
+  "source_class_document": "raw_archives/detection_task.zip::Detection Task/README.md",
+  "source_classes": {
+    "0": "container_yellow",
+    "1": "container_green",
+    "2": "container_default",
+    "3": "container_blue",
+    "4": "container_ash",
+    "5": "container_oil",
+    "6": "container_battery",
+    "7": "container_biodegradable"
+  },
+  "class_map": {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": null,
+    "5": 4,
+    "6": 5,
+    "7": 6
+  },
+  "classes": [
+    "container_yellow",
+    "container_green",
+    "container_default",
+    "container_blue",
+    "container_oil",
+    "container_battery",
+    "container_biodegradable"
+  ],
+  "manifest_sha256": "9600095f28b7fa53ddc3a5f1518486150aaf56cd3897b8a44578088348736d84",
+  "sequence": "video_id + camera_id",
+  "frame_order": "numeric source frame index",
+  "frame_numbering": "1-based within each sequence; SourceFrame preserved",
+  "box_format": "normalized xc, yc, width, height",
+  "track_id_scope": "sequence",
+  "quality": {
+    "duplicate_track_ids_in_frame": 0,
+    "tracks_with_multiple_classes": 0
+  },
+  "raw_quality": {
+    "duplicate_track_ids_in_frame": 87,
+    "tracks_with_multiple_classes": 0
+  },
+  "annotations_file": "annotations_corrected.csv",
+  "frames_file": "frames_corrected.csv",
+  "corrections_file": "annotation_corrections.csv"
+}

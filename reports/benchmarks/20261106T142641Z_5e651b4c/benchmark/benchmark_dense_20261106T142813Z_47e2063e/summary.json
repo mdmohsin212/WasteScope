@@ -1,0 +1,69 @@
+{
+  "frames": 237,
+  "frame_limit": 300,
+  "scope": "Sequential video prefix; warmed models; decode + D1 + T3 + fused S2 + track finalization.",
+  "excluded_from_processing_fps": "Model loading/warmup, overlay, encoding, and final CSV/JSON writes.",
+  "processing_fps_includes": "Progress/status writes and per-frame RSS sampling.",
+  "source_fps": 10.0,
+  "device_name": "Tesla T4",
+  "cuda_build": "12.8",
+  "torch_threads": 4,
+  "opencv_threads": 4,
+  "warmup_iterations": 5,
+  "model_loading_and_warmup_seconds": 14.623727747999999,
+  "measured_processing_seconds": 136.61835978800002,
+  "processing_fps": 1.7347595181772713,
+  "track_finalization_ms": 19.564515000013216,
+  "latency": {
+    "decode": {
+      "mean_ms": 2.322729151898699,
+      "p50_ms": 2.0141210000019782,
+      "p95_ms": 2.4945394000042143,
+      "p99_ms": 4.112440839995747
+    },
+    "detection": {
+      "mean_ms": 15.399108902953904,
+      "p50_ms": 14.610262999994461,
+      "p95_ms": 18.22593559999461,
+      "p99_ms": 21.908131479992218
+    },
+    "tracking_update": {
+      "mean_ms": 22.805891063291103,
+      "p50_ms": 21.85464900000511,
+      "p95_ms": 31.3707175999923,
+      "p99_ms": 36.95348660000092
+    },
+    "segmentation_fused": {
+      "mean_ms": 535.1101481476795,
+      "p50_ms": 461.66359000000057,
+      "p95_ms": 633.1382834000037,
+      "p99_ms": 3029.9790463600016
+    },
+    "frame": {
+      "mean_ms": 575.758138324895,
+      "p50_ms": 499.8606519999953,
+      "p95_ms": 686.3179381999996,
+      "p99_ms": 3072.186837600001
+    }
+  },
+  "max_sampled_process_rss_mib": 7460.59375,
+  "peak_cuda_allocated_mib": 956.5712890625,
+  "peak_cuda_reserved_mib": 3292.0,
+  "counts_for_processed_frames": {
+    "container_yellow": 1,
+    "container_green": 2,
+    "container_default": 3,
+    "container_blue": 1,
+    "container_oil": 0,
+    "container_battery": 0,
+    "container_biodegradable": 1
+  },
+  "numerical_parity": "not_evaluated; compare with frozen validation references separately",
+  "schema_version": 1,
+  "status": "complete",
+  "mode": "benchmark",
+  "input": "/__modal/volumes/vo-JqOX8N7UxKBpPPeeqOPIbE/clips/benchmark_dense.mp4",
+  "output_dir": "/__modal/volumes/vo-JqOX8N7UxKBpPPeeqOPIbE/results/20261106T142641Z_5e651b4c/benchmark/benchmark_dense_20261106T142813Z_47e2063e",
+  "end_to_end_seconds": 152.853821827,
+  "timing_scope": "Local file through saved outputs; model loading included when cold."
+}

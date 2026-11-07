@@ -1,0 +1,105 @@
+[
+  {
+    "file": "demo_containers.mp4",
+    "purpose": "private_demo",
+    "source": "StreetView-Waste",
+    "split": "test",
+    "sequence": "0118_1",
+    "frames": 184,
+    "fps": 10.0,
+    "width": 1280,
+    "height": 720,
+    "duration_seconds": 18.4,
+    "sha256": "f91efb494f876406750ef086f0713a80ab01bf7d07451717d860f47355b7dc0c",
+    "source_zip": "prepared/tracking/test.zip",
+    "first_source_frame": 0,
+    "last_source_frame": 183,
+    "source_dimensions": [
+      1080,
+      1920
+    ],
+    "frame_map": "frame_maps/demo_containers.csv",
+    "publication_status": "private; public display requires dataset permission"
+  },
+  {
+    "file": "demo_occlusion.mp4",
+    "purpose": "private_demo",
+    "source": "StreetView-Waste",
+    "split": "test",
+    "sequence": "0115_1",
+    "frames": 140,
+    "fps": 10.0,
+    "width": 1280,
+    "height": 720,
+    "duration_seconds": 14.0,
+    "sha256": "7a4ad2605760673798b9d88158bd06f377fde73ea3e3d408f0951aa146453335",
+    "source_zip": "prepared/tracking/test.zip",
+    "first_source_frame": 0,
+    "last_source_frame": 139,
+    "source_dimensions": [
+      1080,
+      1920
+    ],
+    "frame_map": "frame_maps/demo_occlusion.csv",
+    "publication_status": "private; public display requires dataset permission"
+  },
+  {
+    "file": "demo_overflow_0012.mp4",
+    "purpose": "private_demo",
+    "source": "StreetView-Waste",
+    "split": "val",
+    "sequence": "0012_1_1_1",
+    "frames": 150,
+    "fps": 10.0,
+    "width": 1280,
+    "height": 720,
+    "duration_seconds": 15.0,
+    "sha256": "22b582443eab570d08bb04f25000498ad126eb7301b009d6caae995993bd5b14",
+    "source_zip": "prepared/segmentation/val.zip",
+    "first_source_frame": 55,
+    "last_source_frame": 204,
+    "source_dimensions": [
+      1080,
+      1920
+    ],
+    "frame_map": "frame_maps/demo_overflow_0012.csv",
+    "publication_status": "private; public display requires dataset permission"
+  },
+  {
+    "file": "demo_overflow_0044.mp4",
+    "purpose": "private_demo",
+    "source": "StreetView-Waste",
+    "split": "val",
+    "sequence": "0044_1_1_1",
+    "frames": 150,
+    "fps": 10.0,
+    "width": 1280,
+    "height": 720,
+    "duration_seconds": 15.0,
+    "sha256": "4ffac99c7cb3effe2bdf197409ff44d7455a4308541f55b5134edc265d2df392",
+    "source_zip": "prepared/segmentation/val.zip",
+    "first_source_frame": 25,
+    "last_source_frame": 174,
+    "source_dimensions": [
+      1080,
+      1920
+    ],
+    "frame_map": "frame_maps/demo_overflow_0044.csv",
+    "publication_status": "private; public display requires dataset permission"
+  },
+  {
+    "file": "public_stock_bins.mp4",
+    "purpose": "public_demo_candidate",
+    "source": "Pexels",
+    "author": "Rob Cot",
+    "source_url": "https://www.pexels.com/video/street-path-cars-road-town-4064322/",
+    "license_url": "https://www.pexels.com/legal-pages/license/",
+    "publication_status": "Pexels website/app use; follow linked terms; no implied endorsement",
+    "frames": 169,
+    "fps": 25.0,
+    "width": 1280,
+    "height": 720,
+    "duration_seconds": 6.76,
+    "sha256": "a0d90d179c1d4ae831b141edb562abd740d9b42e731a1a6b7a0ec3cbe88a9f89"
+  }
+]

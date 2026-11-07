@@ -1,0 +1,16 @@
+metric,value
+mask_mAP50_95,0.2775110925009392
+mask_AP50,0.5299510239497677
+boundary_IoU_matched,0.7662093759670721
+overall_foreground_IoU,0.2521720562912572
+Dice,0.40277540937649164
+false_positive_mask_area_pct,0.017825431874026132
+negative_false_positive_mask_area_pct,0.00018460311412825959
+missed_overflow_rate_pct,63.530778164924506
+gt_instances,861.0
+matched_instances,314.0
+missed_instances,547.0
+false_positive_instances,23.0
+latency_mean_ms,26.756697335920244
+latency_P50_ms,25.719065500027227
+latency_P95_ms,36.958852399993695

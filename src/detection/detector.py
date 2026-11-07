@@ -1,1 +1,0 @@
-"""Container detection inference."""

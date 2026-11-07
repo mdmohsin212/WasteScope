@@ -1,0 +1,100 @@
+{
+  "system": "S2_fused",
+  "run": "S2_yolo26n_seg_roi_960",
+  "selected_on": "val",
+  "result_stage": "final",
+  "operating_confidence": 0.2,
+  "confidence_rule": ">",
+  "imgsz": 960,
+  "selection_reason": "Best canonical validation mask AP50-95; confidence 0.20 reduces false alarms with near-best validation F1.",
+  "validation": {
+    "mask_AP50": 0.6649369397204824,
+    "mask_mAP50_95": 0.3650212107598986,
+    "confidence": 0.2,
+    "TP": 471,
+    "FP": 144,
+    "FN": 390,
+    "precision": 0.7658536585365854,
+    "recall": 0.5470383275261324,
+    "F1": 0.6382113821138211,
+    "background_false_alarm_images": 84,
+    "background_images": 401
+  },
+  "checkpoints": {
+    "detector": {
+      "path": "runs/detect/D1_yolo26n_960/weights/best.pt",
+      "sha256": "cd6b987150bb2106321e59b61ac080a043d451994eb1e1cf99bd192a271109ea"
+    },
+    "full_image": {
+      "path": "runs/segment/S1_yolo26n_seg_960/weights/best.pt",
+      "sha256": "1b8b41a691c0e51691565d4a50ffe7db50aaab144050b62b040548eae547a670"
+    },
+    "roi": {
+      "path": "runs/segment/S2_yolo26n_seg_roi_960/weights/best.pt",
+      "sha256": "c819c5b1e82228f33fd86e72365f8f841898acd88de2411f9e4541684256356f"
+    }
+  },
+  "roi_best_epoch": 1,
+  "roi_policy": {
+    "experiment": "S2_container",
+    "class": "Overflow",
+    "yolo_class_id": 0,
+    "coco_category_id": 1,
+    "crop_factor": 3,
+    "minimum_side": 512,
+    "stored_long_side": 960,
+    "stored_resize": "cap_long_side_without_upscaling",
+    "crop_edges": "shift_inside_image_then_floor_ceil",
+    "duplicate_crops": "remove_exact_bounds",
+    "coverage_definition": "Original raster mask pixels contained in one ROI, before label conversion and resizing",
+    "train_proposals": "GT containers; full-frame sample when no container annotation",
+    "val_proposals": "D1 predictions; no full-frame ROI fallback",
+    "detector_run": "D1_yolo26n_960",
+    "detector_imgsz": 960,
+    "detector_confidence": 0.05,
+    "detector_checkpoint_sha256": "cd6b987150bb2106321e59b61ac080a043d451994eb1e1cf99bd192a271109ea",
+    "full_image_run": "S1_yolo26n_seg_960",
+    "full_image_checkpoint_sha256": "1b8b41a691c0e51691565d4a50ffe7db50aaab144050b62b040548eae547a670",
+    "fusion": "score-ordered mask-IoU NMS",
+    "fusion_iou": 0.5,
+    "AP_confidence_min": 0.001,
+    "max_detections": 100,
+    "supporting_confidence": 0.25,
+    "checkpoint_monitor": "canonical_full_image_COCO_mask_mAP50_95",
+    "ultralytics": "8.4.1",
+    "crop_labels": "COCO raster masks to external polygons; disconnected parts joined with merge_multi_segment",
+    "train_jitter": {
+      "probability": 0.5,
+      "translate_fraction": 0.05,
+      "scale_range": [
+        0.9,
+        1.1
+      ],
+      "seed": 42
+    },
+    "val_jitter": false,
+    "excluded_train_images": [
+      "0018_0_1_1_0036.png",
+      "0107_0_1_1_0141.png"
+    ]
+  },
+  "test_proposals": "D1 predictions only; no GT proposals, jitter or full-frame ROI fallback",
+  "inference": {
+    "AP_confidence_min": 0.001,
+    "max_detections": 100,
+    "detector_max_det": 300,
+    "half": true,
+    "rect": false,
+    "retina_masks": true,
+    "roi_batch": 8,
+    "fusion": "score-ordered mask-IoU NMS >= 0.5; S1 first on score ties"
+  },
+  "manifest_sha256": "9600095f28b7fa53ddc3a5f1518486150aaf56cd3897b8a44578088348736d84",
+  "evaluator_source_sha256": "76d0d88644f99c3ae7f0ceb0db6cf562ed0984ed2c3cd6cc2d11b07aad1e7c8b",
+  "fusion_helper_sha256": "fb411625a89622e29fc14b779f0c2cca9cb48dfc01bb17f1e38f6d8fcd92b462",
+  "versions": {
+    "ultralytics": "8.4.1",
+    "pycocotools": "2.0.11"
+  },
+  "checkpoint_selection_limitation": "S0/S1 used native selection; S2 used canonical fused AP. Not a controlled architecture-only comparison."
+}

@@ -1,0 +1,255 @@
+{
+  "schema_version": 1,
+  "release_id": "wastescope-inference-foundation-v1",
+  "mode": "video",
+  "input": "/__modal/volumes/vo-JqOX8N7UxKBpPPeeqOPIbE/clips/demo_overflow_0012.mp4",
+  "input_sha256": "22b582443eab570d08bb04f25000498ad126eb7301b009d6caae995993bd5b14",
+  "created_utc": "2026-11-06T14:41:39.131231+00:00",
+  "device": "cuda:0",
+  "model_manifest": {
+    "schema_version": 1,
+    "release_id": "wastescope-inference-foundation-v1",
+    "status": "configuration_frozen",
+    "selected_on": "val",
+    "python": "3.12",
+    "weights_directory": "models/weights",
+    "models": {
+      "detector": {
+        "run": "D1_yolo26n_960",
+        "task": "detect",
+        "filename": "D1_yolo26n_960.pt",
+        "source_path": "runs/detect/D1_yolo26n_960/weights/best.pt",
+        "sha256": "cd6b987150bb2106321e59b61ac080a043d451994eb1e1cf99bd192a271109ea",
+        "classes": [
+          "container_yellow",
+          "container_green",
+          "container_default",
+          "container_blue",
+          "container_oil",
+          "container_battery",
+          "container_biodegradable"
+        ]
+      },
+      "segmenter_full": {
+        "run": "S1_yolo26n_seg_960",
+        "task": "segment",
+        "filename": "S1_yolo26n_seg_960.pt",
+        "source_path": "runs/segment/S1_yolo26n_seg_960/weights/best.pt",
+        "sha256": "1b8b41a691c0e51691565d4a50ffe7db50aaab144050b62b040548eae547a670",
+        "classes": [
+          "Overflow"
+        ]
+      },
+      "segmenter_roi": {
+        "run": "S2_yolo26n_seg_roi_960",
+        "task": "segment",
+        "filename": "S2_yolo26n_seg_roi_960.pt",
+        "source_path": "runs/segment/S2_yolo26n_seg_roi_960/weights/best.pt",
+        "sha256": "c819c5b1e82228f33fd86e72365f8f841898acd88de2411f9e4541684256356f",
+        "classes": [
+          "Overflow"
+        ],
+        "selected_epoch": 1
+      }
+    },
+    "configs": {
+      "detection": {
+        "path": "configs/detection.yaml",
+        "sha256": "cb94b92d247d3752c482da451af14d57317f919f575614acbf42959217b95417"
+      },
+      "tracking": {
+        "path": "configs/tracking.yaml",
+        "sha256": "9727bbfe0a86d5ac6ffd206d009b17632c83c0f857ccf67840f5ff75c9854bde"
+      },
+      "segmentation": {
+        "path": "configs/segmentation.yaml",
+        "sha256": "1b03a223c39f4adf13392ebd4e4522f3cfec4f00a686dd9978ca99af80ec0e1a"
+      }
+    },
+    "provenance": {
+      "video_split_sha256": "9600095f28b7fa53ddc3a5f1518486150aaf56cd3897b8a44578088348736d84",
+      "canonical_evaluator_sha256": "76d0d88644f99c3ae7f0ceb0db6cf562ed0984ed2c3cd6cc2d11b07aad1e7c8b",
+      "selected_policies": {
+        "tracking_selected_config": "0de5d3ad40526e7608a9d2bd8187732985a14bb9ea08b58912edfa3f2558cd76",
+        "segmentation_selected_system": "7d47d578f62d69877bd97e0c252108b4d114e97b7211712a287bd8e47e1c50ec",
+        "detection_operating_point": "5dc8b0cf6940aeb782b9202a8017ab76e2d88b95dbec14188ab850168bff9b14"
+      },
+      "checkpoint_selection": "D1/S1 used native training selection; S2 used canonical original-image fused AP; one run per experiment"
+    },
+    "validation_required_before_deployment": [
+      "Common-environment task regression against frozen reference validation outputs",
+      "Tracking/detection rect=True versus segmentation proposal rect=False parity",
+      "End-to-end latency and memory measurements on the selected GPU"
+    ],
+    "environment": {
+      "runtime": {
+        "path": "requirements.txt",
+        "sha256": "e93e877f49eff07edb341a38c872c8e33d219e0e14c0ac758280048562672f52"
+      },
+      "evaluation": {
+        "path": "requirements-evaluation.txt",
+        "sha256": "3d494dace8b639ae4aa7e5cae855380ea1a0bd9822c7519024d7c01c51a63052"
+      }
+    },
+    "verification": {
+      "report": "docs/phase1-verification.md",
+      "cpu_model_smoke": "passed",
+      "cached_coco_replay": "passed",
+      "gpu_inference_parity": "pending_phase_2_regression"
+    }
+  },
+  "effective_configs": {
+    "detection": {
+      "schema_version": 1,
+      "run": "D1_yolo26n_960",
+      "model": "detector",
+      "classes": [
+        "container_yellow",
+        "container_green",
+        "container_default",
+        "container_blue",
+        "container_oil",
+        "container_battery",
+        "container_biodegradable"
+      ],
+      "inference": {
+        "imgsz": 960,
+        "conf": 0.001,
+        "max_det": 300,
+        "half": true,
+        "rect": true,
+        "nms": false,
+        "iou": 0.7,
+        "agnostic_nms": false,
+        "augment": false
+      },
+      "operating_point": {
+        "selected_on": "val",
+        "rule": "score > threshold",
+        "default_confidence": 0.35,
+        "class_confidences": {
+          "container_oil": 0.2
+        }
+      },
+      "provenance": {
+        "operating_point": "reports/detection/D1_yolo26n_960/val_960/confidence_tuning/selected_operating_point.json",
+        "test_report": "reports/detection/D1_yolo26n_960/test_960"
+      }
+    },
+    "tracking": {
+      "schema_version": 1,
+      "run": "T3_botsort",
+      "detector_config": "detection.yaml",
+      "apply_detection_operating_point": false,
+      "tracker_frame_rate_argument": 30,
+      "tracker": {
+        "tracker_type": "botsort",
+        "track_high_thresh": 0.45,
+        "track_low_thresh": 0.1,
+        "new_track_thresh": 0.25,
+        "track_buffer": 30,
+        "match_thresh": 0.8,
+        "fuse_score": true,
+        "gmc_method": "sparseOptFlow",
+        "proximity_thresh": 0.5,
+        "appearance_thresh": 0.8,
+        "with_reid": false,
+        "model": "auto"
+      },
+      "postprocessing": {
+        "min_frames": 10,
+        "max_gap": 5,
+        "max_distance": 0.05,
+        "same_class_only": true,
+        "duration_unit": "distinct_observed_frames",
+        "duration_filter_scope": "counting_only",
+        "finalize_counts": "end_of_video",
+        "reset_state": "every_video"
+      },
+      "provenance": {
+        "selected_on": "val",
+        "selected_config": "reports/tracking/final/selected_config.json",
+        "test_report": "reports/tracking/T3_botsort/test"
+      }
+    },
+    "segmentation": {
+      "schema_version": 1,
+      "run": "S2_yolo26n_seg_roi_960",
+      "variant": "fused",
+      "class_name": "Overflow",
+      "yolo_class_id": 0,
+      "coco_category_id": 1,
+      "models": {
+        "proposals": "detector",
+        "full_image": "segmenter_full",
+        "roi": "segmenter_roi"
+      },
+      "proposal_inference": {
+        "imgsz": 960,
+        "conf": 0.05,
+        "max_det": 300,
+        "half": true,
+        "rect": false,
+        "nms": false,
+        "iou": 0.7,
+        "agnostic_nms": false,
+        "augment": false
+      },
+      "segment_inference": {
+        "imgsz": 960,
+        "conf": 0.001,
+        "max_det": 100,
+        "half": true,
+        "rect": false,
+        "retina_masks": true,
+        "classes": [
+          0
+        ],
+        "augment": false
+      },
+      "full_image_batch": 1,
+      "roi_batch": 8,
+      "roi": {
+        "crop_factor": 3,
+        "minimum_side": 512,
+        "stored_long_side": 960,
+        "resize": "cap_long_side_without_upscaling",
+        "resize_interpolation": "linear",
+        "crop_edges": "shift_inside_image_then_floor_ceil",
+        "duplicate_crops": "remove_exact_bounds",
+        "mask_projection_interpolation": "nearest",
+        "jitter": false,
+        "full_frame_roi_fallback": false
+      },
+      "fusion": {
+        "method": "score_ordered_mask_iou_nms",
+        "suppress_when_iou": ">=",
+        "iou": 0.5,
+        "max_det": 100,
+        "equal_score_priority": "full_image",
+        "no_proposals": "keep_full_image_branch"
+      },
+      "operating_point": {
+        "selected_on": "val",
+        "rule": "score > threshold",
+        "confidence": 0.2
+      },
+      "provenance": {
+        "selected_epoch": 1,
+        "selection_metric": "canonical_fused_mask_AP50_95",
+        "selected_system": "reports/segmentation/S2_yolo26n_seg_roi_960/test_best_960_fused_conf0.2/selected_system.json",
+        "test_report": "reports/segmentation/S2_yolo26n_seg_roi_960/test_best_960_fused_conf0.2"
+      }
+    }
+  },
+  "environment": {
+    "python": "3.12.10",
+    "torch": "2.11.0+cu128",
+    "ultralytics": "8.4.1",
+    "numpy": "2.3.5",
+    "opencv-python": "4.13.0.92",
+    "pycocotools": "2.0.11",
+    "lap": "0.5.12",
+    "imageio-ffmpeg": "0.6.0"
+  }
+}

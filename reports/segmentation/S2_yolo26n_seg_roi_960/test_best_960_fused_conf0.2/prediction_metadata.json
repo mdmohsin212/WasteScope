@@ -1,0 +1,18 @@
+{
+  "cache_key": {
+    "selection_id": "9ae8edad9501264e1809d2cc57cd0217f1c810dae0bb10b18efbce223d336eeb",
+    "test_annotations_sha256": "7d3ed8beedb326d84d8ba93da450f05d3d70aba23c4573d60f1aec438a3a63c7"
+  },
+  "environment": {
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130",
+    "ultralytics": "8.4.1",
+    "pycocotools": "2.0.11",
+    "numpy": "2.4.6",
+    "opencv": "4.14.0",
+    "cuda": "13.0",
+    "gpu": "Tesla T4"
+  },
+  "created_utc": "2026-11-04T14:26:50.358153+00:00",
+  "timing_scope": "AP collection at confidence 0.001, including first-call warmup; not deployment latency"
+}

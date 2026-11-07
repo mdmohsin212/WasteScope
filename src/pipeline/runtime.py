@@ -49,7 +49,7 @@ class Runtime:
         if device == "auto":
             device = "cuda:0" if torch.cuda.is_available() else "cpu"
         elif isinstance(device, int) or str(device).isdigit():
-            device = f"cuda{device}"
+            device = f"cuda:{device}"
         
         self.device = torch.device(device)
         self._models = {}

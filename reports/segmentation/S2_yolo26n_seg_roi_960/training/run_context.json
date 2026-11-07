@@ -1,0 +1,48 @@
+{
+  "prepared_source": "gdrive:WasteScope/prepared/segmentation_roi",
+  "checkpoint_selection": "canonical full-original-image S1+ROI mask AP50-95",
+  "initialization": "COCO-pretrained yolo26n-seg.pt; independent of S1 weights",
+  "optimizer_policy": "Match S1 auto-selected MuSGD: lr0=0.002, momentum=0.9, warmup_bias_lr=0.0",
+  "comparison_limitations": "S0/S1 used native checkpoint selection; S2 uses canonical fused AP and more ROI training samples",
+  "s1_branch": "frozen cached validation predictions from the recorded S1 checkpoint",
+  "fusion_suppression": "mask IoU >= roi_policy.fusion_iou; S1 first on score ties",
+  "roi_validation": {
+    "batch": 32,
+    "imgsz": 960,
+    "half": true,
+    "retina_masks": true,
+    "rect": false,
+    "projection": "nearest-neighbour binary mask resize into original ROI"
+  },
+  "effective_train_crops": 21765,
+  "original_validation_images": 1030,
+  "original_validation_instances": 861,
+  "optimizer": {
+    "name": "MuSGD",
+    "defaults": {
+      "lr": 0.001,
+      "momentum": 0.0,
+      "weight_decay": 0.0,
+      "nesterov": false,
+      "use_muon": false
+    }
+  },
+  "sha256": {
+    "roi_policy.json": "c51b0b317fa16b4ff561e30ac93c9d48c82dafad181dcf13e30d27c9dca3944f",
+    "video_split.json": "9600095f28b7fa53ddc3a5f1518486150aaf56cd3897b8a44578088348736d84",
+    "val/annotations.json": "8318d828d5eeaea97aa3cb9f475907c6fd7e80cb6b6b2e69dadcf2b2f80de176",
+    "val/roi_index.json": "e0a256f068e5a34ea2839e8d32cbdaf7a3573105950687952e8f71d5b1e1c5d4",
+    "support/s1_val_predictions.json": "532a5b678d2e414a0df5566ccbd96ff2e678b04680d71006e7493b701551c831"
+  },
+  "environment": {
+    "python": "3.13.3",
+    "torch": "2.11.0+cu128",
+    "torchvision": "0.26.0+cu128",
+    "ultralytics": "8.4.1",
+    "pycocotools": "2.0.11",
+    "numpy": "2.5.4",
+    "opencv": "5.0.0",
+    "cuda": "12.8",
+    "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition"
+  }
+}

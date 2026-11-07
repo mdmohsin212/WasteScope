@@ -1,0 +1,12 @@
+{
+  "clips": 3,
+  "frames": 616,
+  "processing_fps": 1.6435714839920799,
+  "frame_latency_ms": {
+    "p50": 498.5442584999973,
+    "p95": 959.7740372499999,
+    "p99": 3109.382796049967
+  },
+  "scope": "Separate clips with tracker reset; actual frames pooled; warmup/rendering excluded.",
+  "accuracy_or_numerical_parity": "Not evaluated by this speed benchmark"
+}

@@ -1,0 +1,33 @@
+{
+  "source_archive": "segmentation_task.zip",
+  "source_annotations": 36754,
+  "yolo_class": {
+    "id": 0,
+    "name": "Overflow"
+  },
+  "coco_category_id": 1,
+  "split_policy": "existing video_split.json; no reassignment",
+  "splits": {
+    "train": {
+      "images": 5090,
+      "positive": 2764,
+      "negative": 2326,
+      "overflow_instances": 3442,
+      "videos": 27
+    },
+    "val": {
+      "images": 1030,
+      "positive": 629,
+      "negative": 401,
+      "overflow_instances": 861,
+      "videos": 5
+    },
+    "test": {
+      "images": 1110,
+      "positive": 804,
+      "negative": 306,
+      "overflow_instances": 846,
+      "videos": 6
+    }
+  }
+}

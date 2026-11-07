@@ -1,0 +1,6 @@
+,Best logged validation epoch
+Epoch,72.0
+Precision,0.88836
+Recall,0.83173
+mAP50,0.8836
+mAP50-95,0.67037

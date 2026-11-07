@@ -1,0 +1,2 @@
+Run,Split,Macro Precision,Macro Recall,Macro F1,TP,FP,FN,Oil Recall
+D1_yolo26n_960,test,0.90044065969749,0.9497978927764514,0.9220803097290112,9474,808,554,1.0

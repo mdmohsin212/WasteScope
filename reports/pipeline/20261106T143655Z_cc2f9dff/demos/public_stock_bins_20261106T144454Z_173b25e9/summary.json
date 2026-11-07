@@ -1,0 +1,36 @@
+{
+  "frames": 169,
+  "source_fps": 25.0,
+  "image_shape": [
+    720,
+    1280
+  ],
+  "encoded_shape": [
+    720,
+    1280
+  ],
+  "audio_included": false,
+  "count_mode": "postprocessed cumulative unique tracks",
+  "final_counts": {
+    "container_yellow": 0,
+    "container_green": 0,
+    "container_default": 0,
+    "container_blue": 0,
+    "container_oil": 0,
+    "container_battery": 0,
+    "container_biodegradable": 0
+  },
+  "counted_containers": 0,
+  "tracks_before_duration_filter": 0,
+  "frames_with_overflow_predictions": 3,
+  "overflow_frame_fraction": 0.01775147928994083,
+  "warnings": [],
+  "schema_version": 1,
+  "status": "complete",
+  "mode": "video",
+  "input": "/__modal/volumes/vo-JqOX8N7UxKBpPPeeqOPIbE/clips/public_stock_bins.mp4",
+  "output_dir": "/__modal/volumes/vo-JqOX8N7UxKBpPPeeqOPIbE/results/20261106T143655Z_cc2f9dff/demos/public_stock_bins_20261106T144454Z_173b25e9",
+  "end_to_end_seconds": 19.608256458000028,
+  "timing_scope": "Local file through saved outputs; model loading included when cold.",
+  "end_to_end_fps": 8.618818320843065
+}

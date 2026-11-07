@@ -1,0 +1,28 @@
+{
+  "checkpoint_sha256": "1b8b41a691c0e51691565d4a50ffe7db50aaab144050b62b040548eae547a670",
+  "annotations_sha256": "c3128282edf08ce5aa863103779c33589b5ad833529c5b0c6ea12140611a8839",
+  "split": "val",
+  "ultralytics": "8.4.1",
+  "protocol": {
+    "imgsz": 960,
+    "precision": "FP16",
+    "rect": false,
+    "retina_masks": true,
+    "yolo_class_id": 0,
+    "AP_confidence_min": 0.001,
+    "max_detections_per_image": 100
+  },
+  "inference_created_utc": "2026-11-03T13:41:34.515323+00:00",
+  "warmup_iterations": 10,
+  "environment": {
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130",
+    "ultralytics": "8.4.1",
+    "pycocotools": "2.0.11",
+    "numpy": "2.4.6",
+    "opencv": "4.14.0",
+    "cuda": "13.0",
+    "gpu": "Tesla T4"
+  },
+  "reused_from": null
+}

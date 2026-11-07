@@ -1,0 +1,315 @@
+{
+  "policy": {
+    "experiment": "S2_container",
+    "class": "Overflow",
+    "yolo_class_id": 0,
+    "coco_category_id": 1,
+    "crop_factor": 3,
+    "minimum_side": 512,
+    "stored_long_side": 960,
+    "stored_resize": "cap_long_side_without_upscaling",
+    "crop_edges": "shift_inside_image_then_floor_ceil",
+    "duplicate_crops": "remove_exact_bounds",
+    "coverage_definition": "Original raster mask pixels contained in one ROI, before label conversion and resizing",
+    "train_proposals": "GT containers; full-frame sample when no container annotation",
+    "val_proposals": "D1 predictions; no full-frame ROI fallback",
+    "detector_run": "D1_yolo26n_960",
+    "detector_imgsz": 960,
+    "detector_confidence": 0.05,
+    "detector_checkpoint_sha256": "cd6b987150bb2106321e59b61ac080a043d451994eb1e1cf99bd192a271109ea",
+    "full_image_run": "S1_yolo26n_seg_960",
+    "full_image_checkpoint_sha256": "1b8b41a691c0e51691565d4a50ffe7db50aaab144050b62b040548eae547a670",
+    "fusion": "score-ordered mask-IoU NMS",
+    "fusion_iou": 0.5,
+    "AP_confidence_min": 0.001,
+    "max_detections": 100,
+    "supporting_confidence": 0.25,
+    "checkpoint_monitor": "canonical_full_image_COCO_mask_mAP50_95",
+    "ultralytics": "8.4.1",
+    "crop_labels": "COCO raster masks to external polygons; disconnected parts joined with merge_multi_segment",
+    "train_jitter": {
+      "probability": 0.5,
+      "translate_fraction": 0.05,
+      "scale_range": [
+        0.9,
+        1.1
+      ],
+      "seed": 42
+    },
+    "val_jitter": false,
+    "excluded_train_images": [
+      "0018_0_1_1_0036.png",
+      "0107_0_1_1_0141.png"
+    ]
+  },
+  "splits": {
+    "train": {
+      "images": 5090,
+      "crops": 21765,
+      "positive_crops": 9028,
+      "full_frame_fallbacks": 188,
+      "duplicate_crops_removed": 17,
+      "joined_instances": 39,
+      "tiny_visible_instances_omitted": 15,
+      "images_without_roi": 0,
+      "coverage": {
+        "instances": 3441,
+        "fully_covered": 3436,
+        "at_least_90_percent": 3441,
+        "uncovered": 0,
+        "fully_covered_pct": 99.8546934030805
+      },
+      "coverage_by_video": {
+        "0002": {
+          "instances": 50,
+          "fully_covered": 50,
+          "at_least_90_percent": 50,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0003": {
+          "instances": 290,
+          "fully_covered": 290,
+          "at_least_90_percent": 290,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0008": {
+          "instances": 0,
+          "fully_covered": 0,
+          "at_least_90_percent": 0,
+          "uncovered": 0,
+          "fully_covered_pct": null
+        },
+        "0019": {
+          "instances": 0,
+          "fully_covered": 0,
+          "at_least_90_percent": 0,
+          "uncovered": 0,
+          "fully_covered_pct": null
+        },
+        "0023": {
+          "instances": 246,
+          "fully_covered": 246,
+          "at_least_90_percent": 246,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0025": {
+          "instances": 0,
+          "fully_covered": 0,
+          "at_least_90_percent": 0,
+          "uncovered": 0,
+          "fully_covered_pct": null
+        },
+        "0034": {
+          "instances": 69,
+          "fully_covered": 69,
+          "at_least_90_percent": 69,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0038": {
+          "instances": 40,
+          "fully_covered": 40,
+          "at_least_90_percent": 40,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0047": {
+          "instances": 23,
+          "fully_covered": 23,
+          "at_least_90_percent": 23,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0048": {
+          "instances": 427,
+          "fully_covered": 427,
+          "at_least_90_percent": 427,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0049": {
+          "instances": 321,
+          "fully_covered": 318,
+          "at_least_90_percent": 321,
+          "uncovered": 0,
+          "fully_covered_pct": 99.06542056074767
+        },
+        "0052": {
+          "instances": 182,
+          "fully_covered": 182,
+          "at_least_90_percent": 182,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0055": {
+          "instances": 99,
+          "fully_covered": 99,
+          "at_least_90_percent": 99,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0058": {
+          "instances": 196,
+          "fully_covered": 196,
+          "at_least_90_percent": 196,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0066": {
+          "instances": 36,
+          "fully_covered": 36,
+          "at_least_90_percent": 36,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0099": {
+          "instances": 108,
+          "fully_covered": 108,
+          "at_least_90_percent": 108,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0106": {
+          "instances": 108,
+          "fully_covered": 106,
+          "at_least_90_percent": 108,
+          "uncovered": 0,
+          "fully_covered_pct": 98.14814814814815
+        },
+        "0110": {
+          "instances": 219,
+          "fully_covered": 219,
+          "at_least_90_percent": 219,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0112": {
+          "instances": 16,
+          "fully_covered": 16,
+          "at_least_90_percent": 16,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0120": {
+          "instances": 17,
+          "fully_covered": 17,
+          "at_least_90_percent": 17,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0018": {
+          "instances": 106,
+          "fully_covered": 106,
+          "at_least_90_percent": 106,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0083": {
+          "instances": 192,
+          "fully_covered": 192,
+          "at_least_90_percent": 192,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0084": {
+          "instances": 112,
+          "fully_covered": 112,
+          "at_least_90_percent": 112,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0086": {
+          "instances": 24,
+          "fully_covered": 24,
+          "at_least_90_percent": 24,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0100": {
+          "instances": 87,
+          "fully_covered": 87,
+          "at_least_90_percent": 87,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0107": {
+          "instances": 430,
+          "fully_covered": 430,
+          "at_least_90_percent": 430,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0109": {
+          "instances": 43,
+          "fully_covered": 43,
+          "at_least_90_percent": 43,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        }
+      },
+      "negative_crops": 12737,
+      "excluded_images": 2,
+      "usable_images": 5088
+    },
+    "val": {
+      "images": 1030,
+      "crops": 4787,
+      "positive_crops": 2673,
+      "full_frame_fallbacks": 0,
+      "duplicate_crops_removed": 123,
+      "joined_instances": 2,
+      "tiny_visible_instances_omitted": 1,
+      "images_without_roi": 18,
+      "coverage": {
+        "instances": 861,
+        "fully_covered": 818,
+        "at_least_90_percent": 818,
+        "uncovered": 43,
+        "fully_covered_pct": 95.00580720092915
+      },
+      "coverage_by_video": {
+        "0012": {
+          "instances": 286,
+          "fully_covered": 285,
+          "at_least_90_percent": 285,
+          "uncovered": 1,
+          "fully_covered_pct": 99.65034965034965
+        },
+        "0044": {
+          "instances": 462,
+          "fully_covered": 420,
+          "at_least_90_percent": 420,
+          "uncovered": 42,
+          "fully_covered_pct": 90.9090909090909
+        },
+        "0054": {
+          "instances": 69,
+          "fully_covered": 69,
+          "at_least_90_percent": 69,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        },
+        "0097": {
+          "instances": 0,
+          "fully_covered": 0,
+          "at_least_90_percent": 0,
+          "uncovered": 0,
+          "fully_covered_pct": null
+        },
+        "0103": {
+          "instances": 44,
+          "fully_covered": 44,
+          "at_least_90_percent": 44,
+          "uncovered": 0,
+          "fully_covered_pct": 100.0
+        }
+      },
+      "negative_crops": 2114,
+      "excluded_images": 0,
+      "usable_images": 1030
+    }
+  }
+}

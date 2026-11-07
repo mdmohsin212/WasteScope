@@ -1,0 +1,98 @@
+{
+  "compiled_utc_date": "2026-11-07",
+  "github_tree": "b940945e434c085815e5c53b1117ef385625dbcf",
+  "metrics_recomputed": false,
+  "preparation_summaries_recomputed_from_corrected_annotations": true,
+  "corrected_annotation_sha256": "515639f609735093fa48dc6095fab077e9c3ba9ed0bcd5743b503b9d60fe9a8e",
+  "edits_and_additions": [
+    {
+      "path": "detection/D0_yolo26n_640/val/README.md",
+      "reason": "Remove private-media/raw-cache links and stale next-phase wording; measured values unchanged."
+    },
+    {
+      "path": "detection/D0_yolo26n_640/val_960/README.md",
+      "reason": "Remove private-media/raw-cache links and stale next-phase wording; measured values unchanged."
+    },
+    {
+      "path": "detection/D1_yolo26n_960/test_960/README.md",
+      "reason": "Remove private-media/raw-cache links and stale next-phase wording; measured values unchanged."
+    },
+    {
+      "path": "detection/D1_yolo26n_960/val_960/README.md",
+      "reason": "Remove private-media/raw-cache links and stale next-phase wording; measured values unchanged."
+    },
+    {
+      "path": "segmentation/S2_yolo26n_seg_roi_960/test_best_960_fused_conf0.2/README.md",
+      "reason": "Remove private-media/raw-cache links and stale next-phase wording; measured values unchanged."
+    },
+    {
+      "path": "detection/D1_yolo26n_960/val_960/README.md",
+      "reason": "Correct display label using evaluation_config.json checkpoint and SHA256. Resumed training args remain unchanged."
+    },
+    {
+      "path": "detection/comparison.csv",
+      "reason": "Correct D1 model display label; all numeric cells unchanged."
+    },
+    {
+      "path": "detection/comparison.md",
+      "reason": "Correct label and identify the native evaluator; numeric values unchanged."
+    },
+    {
+      "path": "tracking/preparation/sequences.csv",
+      "reason": "Derived from corrected annotations; original source table archived under original/."
+    },
+    {
+      "path": "tracking/preparation/split_summary.csv",
+      "reason": "Corrected sequence-level aggregation; original pre-correction totals archived."
+    },
+    {
+      "path": "tracking/preparation/class_summary.csv",
+      "reason": "Corrected class totals, counting track IDs within sequence scope."
+    },
+    {
+      "path": "tracking/preparation/README.md",
+      "reason": "Add provenance and disambiguate corrected vs original preparation tables."
+    },
+    {
+      "path": "segmentation/S0_yolo26n_seg_640/val_best_640_conf0.25/README.md",
+      "reason": "New short index derived from original metrics.json; no evaluation rerun."
+    },
+    {
+      "path": "segmentation/S1_yolo26n_seg_960/val_best_960_conf0.25/README.md",
+      "reason": "New short index derived from original metrics.json; no evaluation rerun."
+    },
+    {
+      "path": "segmentation/comparison.csv",
+      "reason": "Derived index of canonical AP from each unchanged metrics.json; val and test kept separate."
+    },
+    {
+      "path": "segmentation/README.md",
+      "reason": "New comparison index with evaluator and operating-threshold distinctions."
+    },
+    {
+      "path": "benchmarks/README.md",
+      "reason": "New concise index of actual benchmark outputs and timing scope."
+    },
+    {
+      "path": "pipeline/README.md",
+      "reason": "New index; keep off-record helper code and private derived media out of reports."
+    },
+    {
+      "path": "onnx_checks/README.md",
+      "reason": "New scope note for preserved existing GitHub reports."
+    },
+    {
+      "path": "README.md",
+      "reason": "New root evidence index and metric/scope notes."
+    },
+    {
+      "path": "sources.csv",
+      "reason": "Provenance index. SHA256 refers to fetched source bytes and packaged bytes; source paths are not runtime paths."
+    }
+  ],
+  "original_preparation_table_locations": {
+    "reports/tracking/preparation/sequences.csv": "reports/tracking/preparation/original/sequences.csv",
+    "reports/tracking/preparation/class_summary.csv": "reports/tracking/preparation/original/class_summary.csv",
+    "reports/tracking/preparation/split_summary.csv": "reports/tracking/preparation/original/split_summary.csv"
+  }
+}

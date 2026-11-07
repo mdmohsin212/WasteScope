@@ -1,1 +1,0 @@
-"""Overflow instance segmentation inference."""

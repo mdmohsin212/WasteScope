@@ -1,0 +1,70 @@
+{
+  "status": "complete",
+  "completed_utc": "2026-11-04T14:27:28.968844+00:00",
+  "selection_id": "9ae8edad9501264e1809d2cc57cd0217f1c810dae0bb10b18efbce223d336eeb",
+  "run": "S2_yolo26n_seg_roi_960",
+  "system": "S2_fused",
+  "split": "test",
+  "images": 1110,
+  "instances": 846,
+  "metrics": {
+    "mask_AP50": 0.5149899981474717,
+    "mask_mAP50_95": 0.2736608010459817,
+    "mask_AR50_95": 0.48971631205673755,
+    "TP": 307,
+    "FP": 137,
+    "FN": 539,
+    "precision": 0.6914414414414415,
+    "recall": 0.3628841607565012,
+    "F1": 0.475968992248062,
+    "overall_foreground_IoU": 0.5021673568141617,
+    "Dice": 0.6685904264078434,
+    "boundary_IoU_matched": 0.8065786301107539,
+    "false_positive_mask_area_pct": 0.02993505658436214,
+    "negative_false_positive_mask_area_pct": 0.009995719609860405,
+    "missed_overflow_rate_pct": 63.71158392434988,
+    "background_images": 306,
+    "background_images_with_false_alarms": 53,
+    "background_false_alarm_rate_pct": 17.320261437908496,
+    "deployment_latency_ms": null
+  },
+  "protocol": {
+    "AP_evaluator": "pycocotools.COCOeval",
+    "iou_type": "segm",
+    "AP_confidence_min": 0.001,
+    "maxDets": [
+      1,
+      10,
+      100
+    ],
+    "IoUs": "0.50:0.05:0.95",
+    "operating_confidence": 0.2,
+    "confidence_rule": ">",
+    "match_mask_IoU": 0.5,
+    "matching": "COCO class-aware, score-ordered",
+    "pixel_metrics": "Pooled foreground pixels; empty/empty adds zero",
+    "boundary": "Mean matched-pair Boundary IoU, width=2% image diagonal",
+    "FP_area": "Mean per-image predicted foreground outside GT, as % of image area",
+    "latency": "Deferred to deployment benchmark; AP collection timings are not production latency"
+  },
+  "inference_environment": {
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130",
+    "ultralytics": "8.4.1",
+    "pycocotools": "2.0.11",
+    "numpy": "2.4.6",
+    "opencv": "4.14.0",
+    "cuda": "13.0",
+    "gpu": "Tesla T4"
+  },
+  "evaluation_environment": {
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130",
+    "ultralytics": "8.4.1",
+    "pycocotools": "2.0.11",
+    "numpy": "2.4.6",
+    "opencv": "4.14.0",
+    "cuda": "13.0",
+    "gpu": "Tesla T4"
+  }
+}

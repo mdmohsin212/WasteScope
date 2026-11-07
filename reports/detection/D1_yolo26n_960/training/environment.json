@@ -1,0 +1,10 @@
+{
+  "python": "3.12.6",
+  "torch": "2.8.0+cu129",
+  "torchvision": "0.23.0+cu129",
+  "ultralytics": "8.4.1",
+  "cuda": "12.9",
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "rclone": "rclone v1.75.2",
+  "optimizer_selected": "SGD"
+}

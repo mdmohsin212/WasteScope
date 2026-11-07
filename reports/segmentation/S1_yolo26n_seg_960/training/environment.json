@@ -1,0 +1,11 @@
+{
+  "python": "3.13.15",
+  "torch": "2.11.0+cu128",
+  "torchvision": "0.26.0+cu128",
+  "ultralytics": "8.4.1",
+  "cuda": "12.8",
+  "gpu": "Tesla T4",
+  "rclone": "rclone v1.75.2",
+  "optimizer_selected": "MuSGD",
+  "checkpoint_selection": "validation mask mAP50-95"
+}

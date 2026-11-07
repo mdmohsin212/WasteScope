@@ -1,0 +1,5 @@
+Run,Split,Mask_AP50,Mask_AP50_95,Report
+S0_yolo26n_seg_640,val,0.26595271065932974,0.14782122443828255,S0_yolo26n_seg_640/val_best_640_conf0.25/README.md
+S1_yolo26n_seg_960,val,0.5299510239497677,0.2775110925009392,S1_yolo26n_seg_960/val_best_960_conf0.25/README.md
+S2_yolo26n_seg_roi_960,val,0.6649369397204824,0.3650212107598986,S2_yolo26n_seg_roi_960/val_best_960_fused_conf0.25/README.md
+S2_yolo26n_seg_roi_960,test,0.5149899981474717,0.2736608010459817,S2_yolo26n_seg_roi_960/test_best_960_fused_conf0.2/README.md

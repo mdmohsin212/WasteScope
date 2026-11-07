@@ -1,0 +1,20 @@
+{
+  "run": "D1_yolo26n_960",
+  "tuned_on": "val",
+  "imgsz": 960,
+  "checkpoint_sha256": "cd6b987150bb2106321e59b61ac080a043d451994eb1e1cf99bd192a271109ea",
+  "default_confidence": 0.35,
+  "class_confidences": {
+    "container_oil": 0.2
+  },
+  "confidence_rule": "score > confidence",
+  "selection_rule": "Global macro-F1 optimum with Oil per-class F1 optimum",
+  "match_iou": 0.5,
+  "matching": "COCO class-aware, score-ordered",
+  "max_dets": [
+    1,
+    10,
+    100
+  ],
+  "confidence_for_ap": 0.001
+}

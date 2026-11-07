@@ -1,0 +1,14 @@
+{
+  "epoch": 1,
+  "checkpoint_monitor": "canonical_full_image_COCO_mask_mAP50_95",
+  "metrics": {
+    "metrics/canonical_mask_AP50": 0.6649369397204824,
+    "metrics/canonical_mask_AP50-95": 0.3650212107598986
+  },
+  "roi_only_metrics": {
+    "metrics/canonical_mask_AP50": 0.5585430014545526,
+    "metrics/canonical_mask_AP50-95": 0.3332737395607513
+  },
+  "original_val_images": 1030,
+  "original_gt_instances": 861
+}

@@ -1,0 +1,15 @@
+Class,Outcome,count,median
+container_battery,Detected,408,23.892479999999978
+container_battery,Missed,53,6.6700799999999845
+container_biodegradable,Detected,181,67.92959999999988
+container_biodegradable,Missed,27,23.169600000000003
+container_blue,Detected,1267,63.190079999999966
+container_blue,Missed,339,46.47024000000002
+container_default,Detected,3890,57.469920000000116
+container_default,Missed,960,35.112179999999995
+container_green,Detected,1276,43.54995000000005
+container_green,Missed,202,21.842400000000055
+container_oil,Detected,214,62.96496000000003
+container_oil,Missed,35,25.48032000000012
+container_yellow,Detected,1251,34.19982000000002
+container_yellow,Missed,100,36.49751999999998

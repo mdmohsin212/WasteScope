@@ -1,0 +1,6 @@
+Area,Observed evidence,Next investigation
+Weak classes,container_yellow: 0.534; container_battery: 0.547; container_blue: 0.606,Inspect FP/FN examples.
+Object size,Missed: 19.52 px; detected: 33.42 px,Compare sizes within each class.
+Localization,container_green: gap=0.24,Inspect box alignment.
+Background false alarms,12/2529 images; rate=0.47%,Review false detections.
+Video variation,Recall: 0.05–0.97,Review low-recall videos.

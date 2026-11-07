@@ -1,0 +1,43 @@
+{
+  "experiment": "S2_container",
+  "class": "Overflow",
+  "yolo_class_id": 0,
+  "coco_category_id": 1,
+  "crop_factor": 3,
+  "minimum_side": 512,
+  "stored_long_side": 960,
+  "stored_resize": "cap_long_side_without_upscaling",
+  "crop_edges": "shift_inside_image_then_floor_ceil",
+  "duplicate_crops": "remove_exact_bounds",
+  "coverage_definition": "Original raster mask pixels contained in one ROI, before label conversion and resizing",
+  "train_proposals": "GT containers; full-frame sample when no container annotation",
+  "val_proposals": "D1 predictions; no full-frame ROI fallback",
+  "detector_run": "D1_yolo26n_960",
+  "detector_imgsz": 960,
+  "detector_confidence": 0.05,
+  "detector_checkpoint_sha256": "cd6b987150bb2106321e59b61ac080a043d451994eb1e1cf99bd192a271109ea",
+  "full_image_run": "S1_yolo26n_seg_960",
+  "full_image_checkpoint_sha256": "1b8b41a691c0e51691565d4a50ffe7db50aaab144050b62b040548eae547a670",
+  "fusion": "score-ordered mask-IoU NMS",
+  "fusion_iou": 0.5,
+  "AP_confidence_min": 0.001,
+  "max_detections": 100,
+  "supporting_confidence": 0.25,
+  "checkpoint_monitor": "canonical_full_image_COCO_mask_mAP50_95",
+  "ultralytics": "8.4.1",
+  "crop_labels": "COCO raster masks to external polygons; disconnected parts joined with merge_multi_segment",
+  "train_jitter": {
+    "probability": 0.5,
+    "translate_fraction": 0.05,
+    "scale_range": [
+      0.9,
+      1.1
+    ],
+    "seed": 42
+  },
+  "val_jitter": false,
+  "excluded_train_images": [
+    "0018_0_1_1_0036.png",
+    "0107_0_1_1_0141.png"
+  ]
+}
