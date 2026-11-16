@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REMOTE = "/app"
-GPU, DAILY_UPLOADS = "T4", 10
+GPU, DAILY_UPLOADS = "L4", 10
 
 app = modal.App("wastescope")
 models = modal.Volume.from_name("wastescope-models-v1", create_if_missing=True, version=2)
