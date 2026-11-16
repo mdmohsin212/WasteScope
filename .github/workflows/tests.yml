@@ -1,5 +1,4 @@
 name: WasteScope tests
-
 on:
   push:
   pull_request:

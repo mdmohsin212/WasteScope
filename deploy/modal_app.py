@@ -133,5 +133,3 @@ def main():
         for path in verified:
             batch.put_file(path, "/weights/" + path.name)
             print("Verified and staged:", path.name)
-
-    print("Three checkpoints staged. No inference or training was started.")
