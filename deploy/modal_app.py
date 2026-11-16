@@ -72,7 +72,7 @@ def get_result(call_id):
     except Exception as error:
         return {
             "state": "failed",
-            "error": f"{type(error).__name__}: {error}",
+            "error": f"{type(error).__name__}: {error}"
         }
 
 
