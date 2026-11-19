@@ -1,120 +1,204 @@
-# Setup, inference and deployment
+# Setup and usage
 
-Run commands from the repository root. Examples use Windows PowerShell and Python 3.12. Linux users can use `python3.12 -m venv venv` and `source venv/bin/activate`.
+Run WasteScope locally to analyze images and videos, or try the [live demo](https://mohsin416m--wastescope-web.us-east.modal.run).
 
-## Install
+Examples use **Windows PowerShell and Python 3.12**. Run all commands from the repository root.
+
+## 1. Install
 
 ```powershell
 git clone https://github.com/mdmohsin212/WasteScope.git
 cd WasteScope
+
 py -3.12 -m venv venv
 .\venv\Scripts\Activate.ps1
+
 python -m pip install torch==2.11.0 torchvision==0.26.0 --index-url https://download.pytorch.org/whl/cpu
 python -m pip install -r requirements-api.txt
 python -m pip check
 ```
 
-For a compatible NVIDIA GPU, replace the CPU PyTorch install with:
+This installs the CPU version, including the web interface and video dependencies.
+
+On Linux, create and activate the environment with:
+
+```bash
+python3.12 -m venv venv
+source venv/bin/activate
+```
+
+<details>
+<summary>Using an NVIDIA GPU?</summary>
+
+In the installation commands above, replace the CPU PyTorch command with:
 
 ```powershell
 python -m pip install torch==2.11.0 torchvision==0.26.0 --index-url https://download.pytorch.org/whl/cu128
 ```
 
-`requirements-api.txt` includes base inference and video dependencies. Evaluation and ONNX dependencies are optional.
+A compatible NVIDIA GPU and driver are required. Use `--device cuda:0` for CLI inference.
 
-## Selected checkpoints
+For the web interface, set this before starting the server:
 
-The three files under `models/weights/` are `D1_yolo26n_960.pt`, `S1_yolo26n_seg_960.pt` and `S2_yolo26n_seg_roi_960.pt`. Their expected hashes and source paths are in `models/manifest.json`. Authorized access is required.
+```powershell
+$env:WASTESCOPE_DEVICE = "cuda:0"
+```
 
-Use an existing rclone remote:
+</details>
+
+## 2. Add the trained models
+
+The checkpoints are stored separately from GitHub. You need authorized access to the selected weights.
+
+With an existing rclone remote and rclone installed on PATH:
 
 ```powershell
 python scripts/setup_models.py --remote gdrive:WasteScope --rclone-config "C:\private\rclone.conf"
 ```
 
-Or use a local/mounted WasteScope folder containing the original `runs/` hierarchy:
+Replace the remote and config path with your own.
+
+<details>
+<summary>Using a local folder or mounted Google Drive instead?</summary>
+
+Point to the WasteScope folder containing the original `runs/` hierarchy:
 
 ```powershell
 python scripts/setup_models.py --source-root "D:\WasteScope"
 ```
 
-For Colab, use `/content/drive/MyDrive/WasteScope`. Existing matching files are reused. Then verify:
+For mounted Google Drive in Colab, use `/content/drive/MyDrive/WasteScope`.
+
+</details>
+
+Then verify the models:
 
 ```powershell
 python scripts/setup_models.py --check --smoke-test
 ```
 
-The smoke test checks hashes, class/task order and tiny CPU forwards, not accuracy. Keep credentials outside Git; do not replace expected hashes to accept other checkpoints.
+Setup places these files in `models/weights/`:
 
-## CLI and outputs
+- `D1_yolo26n_960.pt`
+- `S1_yolo26n_seg_960.pt`
+- `S2_yolo26n_seg_roi_960.pt`
+
+Existing matching files are reused. Setup verifies checkpoint hashes and performs small CPU forward checks. It does not download datasets or train models.
+
+Checkpoint identities are recorded in `models/manifest.json`. Keep rclone credentials outside Git.
+
+## 3. Start the app
+
+```powershell
+python -m uvicorn src.api.main:app --host 127.0.0.1 --port 8000
+```
+
+Open **http://127.0.0.1:8000**, upload an image or short video, and select **Analyze media**.
+
+The app uses CPU by default. Models load on the first prediction, so the first job can take longer. Keep the terminal open while using the local app, and use one server worker.
+
+API documentation is available at **http://127.0.0.1:8000/docs**.
+
+## Run from the command line
 
 ```powershell
 python scripts/infer.py image --input "C:\media\image.jpg" --device cpu
 python scripts/infer.py video --input "C:\media\clip.mp4" --device cpu
 ```
 
-Use `--device cuda:0` on a configured GPU, or `--device auto`. CPU uses full precision. Optional `--models-dir` and `--output-root` select other folders. Short media is more practical on CPU.
+For GPU inference, replace `cpu` with `cuda:0`. Use short clips when running on CPU.
+
+Each CLI run creates a separate folder under `outputs/`.
 
 | Output | Image | Video |
 | --- | --- | --- |
-| Annotated media | `annotated.png` | `annotated.mp4`, H.264 without audio |
+| Annotated media | `annotated.png` | `annotated.mp4` |
 | Predictions | `predictions.json` | `frames.jsonl`, `tracks.csv` |
-| Run evidence | `summary.json`, `run_config.json`, `status.json` | Same, plus `encoding.log` |
+| Run details | `summary.json`, `run_config.json`, `status.json` | Same, plus `encoding.log` |
 
-Video tracking resets per input. Finalized IDs/counts are applied during a second decoding/rendering pass. Odd frame dimensions receive right/bottom padding for encoding; predictions retain original coordinates. CLI outputs go into separate run folders under `outputs/` by default.
+Video output uses H.264 without audio. Tracking resets for each video, and final IDs/counts are applied after the whole clip is processed.
 
-## Local UI and API
+Local web/API results are stored under `outputs/api/`. Downloads are available through the interface.
 
-```powershell
-$env:WASTESCOPE_DEVICE = "cpu"
-python -m uvicorn src.api.main:app --host 127.0.0.1 --port 8000
-```
+## Deploy on Modal
 
-Open <http://127.0.0.1:8000> or `/docs`. Models load on the first job. Use one server worker: local jobs use an in-process queue. `WASTESCOPE_OUTPUTS` optionally changes API storage.
+Complete the model setup above before the first deployment.
 
-| Endpoint | Purpose |
-| --- | --- |
-| `GET /health` | Liveness; `pipeline_loaded` does not establish GPU/model readiness |
-| `POST /jobs` | Multipart field `file`; HTTP 202 with job/status links |
-| `GET /jobs/{job_id}` | State/progress; result and artifact links when complete |
-| `GET /jobs/{job_id}/result` | Final summary |
-| `GET /jobs/{job_id}/files/{name}` | Allowed artifact; `?inline=true` enables preview |
-
-```powershell
-curl.exe -X POST "http://127.0.0.1:8000/jobs" -F "file=@C:\media\image.jpg"
-```
-
-Poll the returned status link until complete, then follow its result/file links. HTTP 429 means queue/budget limits; 413 means file size; 415 means unsupported extension. Decode/media-limit errors may appear as failed jobs after acceptance. Local jobs do not survive server shutdown.
-
-## Modal deployment
+### First deployment
 
 ```powershell
 python -m pip install modal==1.6.3
 python -m modal setup
+
 python -m modal run deploy/modal_app.py
 python -m modal deploy deploy/modal_app.py
 ```
 
-The `run` entrypoint verifies/uploads the three local checkpoints to the model volume. It does not train or run a prediction. Repeat staging only if the volume is missing or checkpoints intentionally change. For code updates, use only the `deploy` command. Open the `web` URL printed by deployment; it belongs to the active workspace/environment.
+The `run` command verifies and uploads the three checkpoints to the Modal model volume. The `deploy` command publishes the application.
+
+Open the **web URL** printed by deployment.
+
+### Update an existing deployment
+
+After changing application code:
+
+```powershell
+python -m modal deploy deploy/modal_app.py
+```
+
+Repeat model staging only when the model volume needs to be populated or the selected checkpoints intentionally change.
+
+### View logs
 
 ```powershell
 python -m modal app logs wastescope
 python -m modal app dashboard wastescope
 ```
 
-The API stores job state in Modal Dict and starts a background GPU call; media/results and weights use separate volumes. Artifacts are committed before completion is published. Both web/GPU functions have zero minimum containers, a maximum of one each, and a configured 30-second idle window. Cold starts are expected. The T4 call timeout is 15 minutes.
+The current deployment uses an **L4 GPU**. Web and GPU functions scale to zero when idle, so cold starts can delay the first visit or prediction. The hosted app runs independently of your local PC.
 
-See the [README](../README.md#hosted-demo) for media and daily limits. The daily budget counts reservations, including rejected attempts. Results expire after 24 hours; physical removal can wait until the next 6-hour cleanup pass. The general CLI does not enforce these cloud-demo media caps.
+Cloud results expire after 24 hours. See [hosted-demo limits](../README.md#hosted-demo) before uploading media.
 
-## Benchmarks and ONNX
+## Optional tools
+
+<details>
+<summary>Use the API directly</summary>
+
+Submit a file:
+
+```powershell
+curl.exe -X POST "http://127.0.0.1:8000/jobs" -F "file=@C:\media\image.jpg"
+```
+
+Follow the returned status link until the job completes, then use its result and download links.
+
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /health` | Check whether the API is running |
+| `POST /jobs` | Submit an image or video |
+| `GET /jobs/{job_id}` | Check progress |
+| `GET /jobs/{job_id}/result` | Get the final summary |
+| `GET /jobs/{job_id}/files/{name}` | Download an output file |
+
+Local jobs do not survive server shutdown. A successful health response does not verify model or GPU readiness.
+
+</details>
+
+<details>
+<summary>Benchmark inference</summary>
 
 ```powershell
 python scripts/benchmark.py --input "C:\media\clip.mp4" --device cpu --max-frames 100 --warmup 5
 ```
 
-Use `--device cuda:0` for GPU measurement. Match clip/device/timing scope when comparing results. Warmed processing FPS differs from rendered end-to-end FPS. [Recorded benchmark](../reports/benchmarks/README.md).
+Use `--device cuda:0` for GPU measurement. Compare results using the same input, device and timing scope.
 
-Optional CPU FP32 export and sampled comparison:
+See [recorded benchmarks](../reports/benchmarks/README.md) for existing results and measurement details.
+
+</details>
+
+<details>
+<summary>Export and check ONNX models</summary>
 
 ```powershell
 python -m pip install -r requirements-onnx.txt
@@ -122,33 +206,46 @@ python scripts/export_onnx.py
 python scripts/check_onnx.py --input "C:\media\clip.mp4"
 ```
 
-These tools do not switch the deployed PyTorch runtime to ONNX. Sampled conversion success does not establish full accuracy or tracking parity.
+These tools perform CPU FP32 export and sampled comparison. They do not change the deployed PyTorch runtime or establish full accuracy/tracking parity.
 
-## Training and evaluation
+</details>
 
-Use the task notebooks in `notebooks/` and S2 training/monitor files in `scripts/segmentation/`. Historical notebooks contain cloud paths and task-specific dependencies. Optional tracking evaluation packages: `python -m pip install -r requirements-evaluation.txt`.
-
-Follow the checkpoint identities, split manifests and policies in [reports](../reports/README.md). Select policies on validation; do not retune on the held-out test.
-
-## Verification and scope
+<details>
+<summary>Run tests</summary>
 
 ```powershell
 python -m compileall -q src scripts
 python -m unittest discover -s tests -p "test_*.py" -v
 ```
 
-The CPU suite covers setup integrity, jobs, cloud adapters, geometry, outputs/count consistency, encoding and failure handling. Pipeline/API tests mock model adapters; passing them does not establish model accuracy or GPU numerical parity.
+The CPU tests cover application behavior and failure handling. Pipeline/API tests use mocked model adapters; model accuracy is documented separately in [experiment reports](../reports/README.md).
 
-The selected checkpoints passed owner-run CPU forward checks. Reports contain the sampled CPU FP32 ONNX check and T4 benchmark/demos; the owner confirmed deployed inference works. Full frozen-validation replay in the deployed environment and full-sequence backend parity remain follow-up validation. Manifest config/environment text hashes normalize UTF-8 without BOM and LF line endings; checkpoint hashes always cover original binary bytes.
+</details>
+
+<details>
+<summary>Training and evaluation</summary>
+
+Use the task notebooks under `notebooks/` and the S2 training helpers under `scripts/segmentation/`.
+
+For tracking evaluation dependencies:
+
+```powershell
+python -m pip install -r requirements-evaluation.txt
+```
+
+Notebooks contain environment-specific paths. Follow the split manifests, checkpoints and policies in [experiment reports](../reports/README.md). Select settings on validation data before evaluating on test data.
+
+</details>
 
 ## Troubleshooting
 
-| Problem | Action |
+| Problem | What to do |
 | --- | --- |
-| Missing/wrong checkpoint | Stage the selected weights and verify again |
-| `rclone` not found | Install it on PATH or use `--source-root` |
-| Slow first job | Check status/logs; cold initialization and CPU inference take time |
-| Detection but no count | Eligibility requires 10 observed frames after reconnection |
-| Invalid video/FPS | Re-encode with valid constant-FPS metadata |
-| Encoding failure | Inspect the run's `encoding.log` |
-| Cloud result unavailable | Download results before their expiration |
+| Missing or incorrect weights | Repeat model setup, then run `--check --smoke-test` |
+| `rclone` not found | Install rclone on PATH or use `--source-root` |
+| Slow first prediction | Allow time for model loading; CPU video inference is slower |
+| Detections appear but counts stay zero | Counting requires 10 observed frames after reconnection |
+| Video cannot be processed | Re-encode it with valid constant-FPS metadata |
+| Video encoding fails | Check `encoding.log` in the run folder |
+| Upload rejected | Check file type, size and hosted-demo limits |
+| Cloud result expired | Run the prediction again and download the outputs before expiry |
